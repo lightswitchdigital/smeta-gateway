@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "smeta.mappings_path",
+      "type": "java.lang.String",
+      "description": "path to JSON file with mappings."
+    },
+    {
+      "name": "smeta.program_path",
+      "type": "java.lang.String",
+      "description": "path to smeta program."
+    }
+  ]
+}

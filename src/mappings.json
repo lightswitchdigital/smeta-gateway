@@ -1,4 +1,12 @@
 {
-  "cell" : "C569",
-  "result": "D18"
+  "cells": {
+    "cell" : {
+      "id" : "C569",
+      "def" : 1
+    },
+    "result": {
+      "id" : "D18",
+      "def" : 0
+    }
+  }
 }

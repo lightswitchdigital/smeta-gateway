@@ -3,6 +3,7 @@ package com.lightswitch.ramdom.smeta.controllers;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lightswitch.ramdom.smeta.WorkbooksPool;
 import com.lightswitch.ramdom.smeta.mappings.Cells;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
@@ -10,47 +11,37 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import java.io.*;
+import java.util.Iterator;
 
 @RequestMapping(path = "/api/v1/calculate")
 @RestController
 public class SmetaController {
 
-    XSSFWorkbook workbook;
-    Cells mappings;
+    public Cells mappings;
+    public WorkbooksPool pool;
+
+    private final String mappings_path;
 
     public SmetaController() {
-        FileInputStream file = null;
 
-        String path = System.getProperty("user.dir") + "/src/static/program.xlsx";
+        this.mappings_path = "/src/mappings.json";
 
-        try {
-            file = new FileInputStream(path);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        assert file != null;
+        this.pool = new WorkbooksPool();
 
-        XSSFWorkbook workbook = null;
-        try {
-            workbook = new XSSFWorkbook(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        assert workbook != null;
+        this.setMappings();
 
-        this.workbook = workbook;
+    }
+
+    private void setMappings() {
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String jsonPath = System.getProperty("user.dir") + "/src/mappings.json";
-        Cells cells = null;
+        String jsonPath = System.getProperty("user.dir") + this.mappings_path;
+        Cells mappings = null;
 
         try {
-            cells = objectMapper.readValue(new File(jsonPath), Cells.class);
+            mappings = objectMapper.readValue(new File(jsonPath), Cells.class);
         } catch (JsonGenerationException e) {
             System.out.println("json generation exception");
             e.printStackTrace();
@@ -62,73 +53,47 @@ public class SmetaController {
             e.printStackTrace();
         }
 
-        this.mappings = cells;
+        this.mappings = mappings;
     }
 
     @GetMapping
-    public Double calculate() {
-        return this.getCalculatedPrice();
+    @ResponseBody
+    public Double calculate(@RequestParam Double count) {
+        return this.getCalculatedPrice(count);
     }
 
-    private Double getCalculatedPrice() {
-        XSSFWorkbook workbook = this.workbook;
+    private Double getCalculatedPrice(Double count) {
+
+        XSSFWorkbook workbook = this.getWorkbook();
         FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
 
-        Cell valueCell = this.getCell(this.mappings.cell);
-        valueCell.setCellValue(15);
+        Cell valueCell = this.getCell(workbook, this.mappings.getCellID("cell"));
+        valueCell.setCellValue(count);
 
-        Cell cell = this.getCell(this.mappings.result);
+        Cell cell = this.getCell(workbook, this.mappings.getCellID("result"));
         Double cellValue = evaluator.evaluate(cell).getNumberValue();
+        cell.getCellType();
 
         return cellValue;
     }
 
-
     // Getters
 
     private XSSFWorkbook getWorkbook() {
-        return this.workbook;
+        return this.pool.getWorkbook();
     }
 
-    private XSSFSheet getSheet() {
-        return this.workbook.getSheetAt(1);
+    private XSSFSheet getSheet(XSSFWorkbook workbook) {
+        return workbook.getSheetAt(1);
     }
 
-    private Cell getCell(String cellName) {
-        XSSFSheet sheet = this.getSheet();
+    private Cell getCell(XSSFWorkbook workbook, String cellName) {
+
+        XSSFSheet sheet = this.getSheet(workbook);
 
         CellReference cr = new CellReference(cellName);
         Row row = sheet.getRow(cr.getRow());
 
         return row.getCell(cr.getCol());
-    }
-
-    public Double getDoubleCellValue(String cellName) {
-        Cell cell = this.getCell(cellName);
-
-        return cell.getNumericCellValue();
-    }
-
-    public String getStringCellValue(String cellName) {
-        Cell cell = this.getCell(cellName);
-
-        return cell.getStringCellValue();
-    }
-
-
-    public XSSFWorkbook cloneWorkbook() {
-
-        XSSFWorkbook workbook = null;
-
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream(4096);
-            this.workbook.write(baos);
-            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-            workbook = new XSSFWorkbook(bais);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return workbook;
     }
 }
