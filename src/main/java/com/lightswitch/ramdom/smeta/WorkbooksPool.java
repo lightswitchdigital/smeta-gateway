@@ -9,22 +9,27 @@ import java.util.*;
 public class WorkbooksPool {
 
     private List<XSSFWorkbook> pool;
+    private String program_path;
+
+    private Integer workbooks_count;
 
     public WorkbooksPool() {
 
         this.pool = new ArrayList<>();
+        this.program_path = "/src/static/program.xlsx";
+        this.workbooks_count = 5;
 
         long startTime = System.nanoTime();
 
-        System.out.println("loading programs");
+        System.out.println("Loading workbooks into the pool ("+this.workbooks_count+")");
 
         XSSFWorkbook workbook = this.getProgram();
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < this.workbooks_count; i++) {
 
             XSSFWorkbook wb = this.cloneWorkbook(workbook);
 
-            System.out.println("adding workbook " + i);
+            System.out.println("Adding workbook " + (i + 1));
 
             this.pool.add(wb);
         }
@@ -32,7 +37,7 @@ public class WorkbooksPool {
         long elapsedTime = System.nanoTime() - startTime;
         double seconds = (double)elapsedTime / 1_000_000_000.0;
 
-        System.out.println("time passed since loading: " + seconds);
+        System.out.println("Workbooks loading took: " + Math.round(seconds) + "s");
     }
 
     public XSSFWorkbook getWorkbook() {
@@ -48,8 +53,7 @@ public class WorkbooksPool {
     private XSSFWorkbook getProgram() {
         FileInputStream file = null;
 
-        String path = System.getProperty("user.dir") + "/src/static/program.xlsx";
-        System.out.println(path);
+        String path = System.getProperty("user.dir") + this.program_path;
 
         try {
             file = new FileInputStream(path);
@@ -67,10 +71,6 @@ public class WorkbooksPool {
         assert workbook != null;
 
         return workbook;
-    }
-
-    private void resetCellsValues() {
-//        Todo
     }
 
     public XSSFWorkbook cloneWorkbook(XSSFWorkbook wb) {

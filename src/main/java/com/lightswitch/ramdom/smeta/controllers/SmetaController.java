@@ -14,6 +14,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.bind.annotation.*;
 import java.io.*;
 import java.util.Iterator;
+import java.util.Map;
 
 @RequestMapping(path = "/api/v1/calculate")
 @RestController
@@ -29,7 +30,6 @@ public class SmetaController {
         this.mappings_path = "/src/mappings.json";
 
         this.pool = new WorkbooksPool();
-
         this.setMappings();
 
     }
@@ -58,18 +58,38 @@ public class SmetaController {
 
     @GetMapping
     @ResponseBody
-    public Double calculate(@RequestParam Double count) {
-        return this.getCalculatedPrice(count);
+    public Double calculate(@RequestParam Map<String,String> params) {
+        return this.getCalculatedPrice(params);
     }
 
-    private Double getCalculatedPrice(Double count) {
+    private Double getCalculatedPrice(Map<String,String> params) {
 
         XSSFWorkbook workbook = this.getWorkbook();
         FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
 
-        Cell valueCell = this.getCell(workbook, this.mappings.getCellID("cell"));
-        valueCell.setCellValue(count);
+//        Resetting cells to default values
+        this.resetCellsValues(workbook);
 
+//        Setting client provided values
+        for (Map.Entry<String,String> entry : params.entrySet()) {
+
+            String name = entry.getKey();
+
+            try {
+                double value = Double.parseDouble(entry.getValue());
+
+                Cell valueCell = this.getCell(workbook, this.mappings.getCellID(name));
+                valueCell.setCellValue(value);
+
+            }catch (NumberFormatException e) {
+                String value = entry.getValue();
+
+                Cell valueCell = this.getCell(workbook, this.mappings.getCellID(name));
+                valueCell.setCellValue(value);
+            }
+        }
+
+//        Getting final result
         Cell cell = this.getCell(workbook, this.mappings.getCellID("result"));
         Double cellValue = evaluator.evaluate(cell).getNumberValue();
         cell.getCellType();
@@ -95,5 +115,29 @@ public class SmetaController {
         Row row = sheet.getRow(cr.getRow());
 
         return row.getCell(cr.getCol());
+    }
+
+    private void setCellValue(XSSFWorkbook workbook, String cellName, Double value) {
+
+        Cell cell = this.getCell(workbook, cellName);
+
+        cell.setCellValue(value);
+    }
+
+    private void setCellValue(XSSFWorkbook workbook, String cellName, String value) {
+
+        Cell cell = this.getCell(workbook, cellName);
+
+        cell.setCellValue(value);
+
+    }
+
+    private void resetCellsValues(XSSFWorkbook workbook) {
+        for (Map.Entry<String, com.lightswitch.ramdom.smeta.mappings.Cell> entry : this.mappings.cells.entrySet()) {
+            String id = entry.getValue().id;
+            String def = entry.getValue().def;
+
+            this.setCellValue(workbook, id, def);
+        }
     }
 }
