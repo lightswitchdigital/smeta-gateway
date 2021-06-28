@@ -1,9 +1,199 @@
 {
   "cells": {
-    "balconies_count" : {
-      "id" : "C569",
-      "def" : 1
+
+    "building_type_by_floors": {
+      "id": "A6",
+      "type": "select",
+      "label": "Выбор типа строения по этажности",
+      "def": "1 полноценный этаж",
+      "variants": [
+        "1 полноценный этаж",
+        "2 полноценных этажа",
+        "1 этаж + 2-ой мансардный",
+        "1 мансардный этаж",
+        "1 эт + 2-ой мансарда с перекрытием"
+      ]
     },
+    "building_material": {
+      "id": "A8",
+      "type": "select",
+      "label": "Выбор материала дома",
+      "def": "Кирпичный дом",
+      "variants": [
+        "Дом не строить",
+        "Каркасный дом. Брус",
+        "Каркасный дом. Двутавр дерево",
+        "Газобетон дом",
+        "Пенобетон дом",
+        "Кирпичный дом",
+        "Брусовой дом",
+        "Сип панели дом",
+        "Клееный брус дом",
+        "Профилированный брус дом",
+        "Дикое бревно",
+        "Оцилиндрованное бревно",
+        "1-ый эт кирпич 2-ой эт пенобетон",
+        "1-ый эт кирпич 2-ой эт брус",
+        "1-ый эт кирпич 2-ой эт клееный брус",
+        "1-ый эт кирпич 2-ой эт профилированный брус",
+        "1-ый эт кирпич 2-ой эт дикое бревно брус",
+        "1-ый эт кирпич 2-ой эт дикое оцилиндр брус",
+        "1-ый эт кирпич 2-ой эт дикое сип панели",
+        "1-ый эт кирпич 2-ой эт каркасник",
+        "1-ый эт кирпич 2-ой эт газобетон",
+        "1-ый эт газобетон 2-ой эт брус",
+        "1-ый эт газобетон 2-ой эт профилированный брус",
+        "1-ый эт газобетон 2-ой эт дикое бревно",
+        "1-ый эт газобетон 2-ой эт оцилиндр бревно",
+        "1-ый эт газобетон 2-ой эт сип панели",
+        "1-ый эт газобетон 2-ой эт каркасник",
+        "1-ый эт газобетон 2-ой эт пенобетон",
+        "1-ый эт газобетон 2-ой эт газобетон",
+        "1-ый эт пенобетон 2-ой эт брус",
+        "1-ый эт пенобетон 2-ой эт профилированный брус",
+        "1-ый эт пенобетон 2-ой эт оцилиндр бревно",
+        "1-ый эт пенобетон 2-ой эт сип панели",
+        "1-ый эт пенобетон 2-ой эт каркасник",
+        "1-ый эт брус 2-ой эт каркасник"
+      ]
+    },
+
+    "building_width": {
+      "id": "C11",
+      "type": "number",
+      "label": "Ширина дома",
+      "def": 10,
+      "group": "basics"
+    },
+    "building_length": {
+      "id": "C12",
+      "type": "number",
+      "label": "Длина дома",
+      "def": 10,
+      "group": "basics"
+    },
+    "first_floor_height": {
+      "id": "C13",
+      "type": "number",
+      "label": "Высота 1-го этажа",
+      "def": 3,
+      "group": "basics"
+    },
+    "height_from_overlap_to_apex": {
+      "id": "C14",
+      "type": "number",
+      "label": "Высота от перекрытий 0 эт до конька",
+      "def": 8,
+      "group": "basics"
+    },
+    "attic_wall": {
+      "id": "C15",
+      "type": "number",
+      "label": "Аттиковая стена, мансардный этаж",
+      "def": 1.20,
+      "group": "basics"
+    },
+    "second_floor_height": {
+      "id": "C16",
+      "type": "number",
+      "label": "Высота 2-го этажа",
+      "def": 2.20,
+      "group": "basics"
+    },
+    "left_wall_first_floor_height": {
+      "id": "A21",
+      "type": "number",
+      "label": "Высота левой боковой стены 1-го этажа",
+      "def": 3,
+      "group": "basics"
+    },
+    "right_wall_first_floor_height": {
+      "id": "A22",
+      "type": "number",
+      "label": "Высота правой боковой стены 1-го этажа",
+      "def": 4,
+      "group": "basics"
+    },
+    "left_wall_second_floor_height": {
+      "id": "A23",
+      "type": "number",
+      "label": "Высота левой боковой стены 2-го этажа",
+      "def": 0,
+      "group": "basics"
+    },
+    "right_wall_second_floor_height": {
+      "id": "A24",
+      "type": "number",
+      "label": "Высота правой боковой стены 2-го этажа",
+      "def": 1.5,
+      "group": "basics"
+    },
+    "from_left_wall_to_apex": {
+      "id": "A29",
+      "type": "number",
+      "label": "Расстояние от левой стены дома до конька",
+      "def": 4,
+      "group": "basics"
+    },
+    "from_right_wall_to_apex": {
+      "id": "A30",
+      "type": "number",
+      "label": "Высота 2-го этажа",
+      "def": 5,
+      "group": "basics"
+    },
+
+
+    "stairs_count": {
+      "id": "B1128",
+      "type": "integer",
+      "def": 10,
+      "group": "stairs",
+      "subgroup": "params"
+    },
+    "stair_height": {
+      "id": "B1129",
+      "type": "integer",
+      "def": 2000,
+      "group": "stairs",
+      "subgroup": "params"
+    },
+    "stair_length": {
+      "id": "B1130",
+      "type": "integer",
+      "def": 3000,
+      "group": "stairs",
+      "subgroup": "params"
+    },
+    "stair_width": {
+      "id": "B1131",
+      "type": "integer",
+      "def": 800,
+      "group": "stairs",
+      "subgroup": "params"
+    },
+    "stairs_place_length": {
+      "id": "B1132",
+      "type": "integer",
+      "def": 500,
+      "group": "stairs",
+      "subgroup": "params"
+    },
+    "stairs_place_stroke": {
+      "id": "B1133",
+      "type": "integer",
+      "def": 100,
+      "group": "stairs",
+      "subgroup": "params"
+    },
+    "stairs_extra_stroke": {
+      "id": "B1134",
+      "type": "integer",
+      "def": 50,
+      "group": "stairs",
+      "subgroup": "params"
+    },
+
     "result": {
       "id" : "D18",
       "def" : 0

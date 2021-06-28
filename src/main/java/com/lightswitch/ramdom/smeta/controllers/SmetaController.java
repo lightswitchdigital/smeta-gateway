@@ -60,6 +60,17 @@ public class SmetaController {
     @ResponseBody
     public Double calculate(@RequestParam Map<String,String> params) {
         return this.getCalculatedPrice(params);
+//        return this.getTestCellValue();
+    }
+
+    private Double getTestCellValue() {
+        XSSFWorkbook workbook = this.getWorkbook();
+        FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
+
+        Cell cell =  this.getCell(workbook, "C569");
+        Double value = evaluator.evaluate(cell).getNumberValue();
+
+        return value;
     }
 
     private Double getCalculatedPrice(Map<String,String> params) {

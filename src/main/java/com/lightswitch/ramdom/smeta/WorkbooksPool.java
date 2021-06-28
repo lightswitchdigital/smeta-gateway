@@ -9,9 +9,9 @@ import java.util.*;
 public class WorkbooksPool {
 
     private List<XSSFWorkbook> pool;
-    private String program_path;
+    private final String program_path;
 
-    private Integer workbooks_count;
+    private final Integer workbooks_count;
 
     public WorkbooksPool() {
 
