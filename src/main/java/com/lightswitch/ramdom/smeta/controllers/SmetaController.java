@@ -67,10 +67,11 @@ public class SmetaController {
         XSSFWorkbook workbook = this.getWorkbook();
         FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
 
-        Cell cell =  this.getCell(workbook, "C569");
-        Double value = evaluator.evaluate(cell).getNumberValue();
+        Cell cell =  this.getCell(workbook, "C11");
+        return cell.getNumericCellValue();
+//        Double value = evaluator.evaluate(cell).getNumberValue();
 
-        return value;
+//        return value;
     }
 
     private Double getCalculatedPrice(Map<String,String> params) {
@@ -115,7 +116,7 @@ public class SmetaController {
     }
 
     private XSSFSheet getSheet(XSSFWorkbook workbook) {
-        return workbook.getSheetAt(1);
+        return workbook.getSheetAt(2);
     }
 
     private Cell getCell(XSSFWorkbook workbook, String cellName) {

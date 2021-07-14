@@ -16,8 +16,8 @@ public class WorkbooksPool {
     public WorkbooksPool() {
 
         this.pool = new ArrayList<>();
-        this.program_path = "/src/static/program.xlsx";
-        this.workbooks_count = 5;
+        this.program_path = "/src/program.xlsx";
+        this.workbooks_count = 2;
 
         long startTime = System.nanoTime();
 
