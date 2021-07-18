@@ -101,48 +101,324 @@
       "group": "basics"
     },
     "left_wall_first_floor_height": {
-      "id": "A21",
+      "id": "C21",
       "type": "number",
       "label": "Высота левой боковой стены 1-го этажа",
       "def": 3,
       "group": "basics"
     },
     "right_wall_first_floor_height": {
-      "id": "A22",
+      "id": "C22",
       "type": "number",
       "label": "Высота правой боковой стены 1-го этажа",
       "def": 4,
       "group": "basics"
     },
     "left_wall_second_floor_height": {
-      "id": "A23",
+      "id": "C23",
       "type": "number",
       "label": "Высота левой боковой стены 2-го этажа",
       "def": 0,
       "group": "basics"
     },
     "right_wall_second_floor_height": {
-      "id": "A24",
+      "id": "C24",
       "type": "number",
       "label": "Высота правой боковой стены 2-го этажа",
       "def": 1.5,
       "group": "basics"
     },
     "from_left_wall_to_apex": {
-      "id": "A29",
+      "id": "C29",
       "type": "number",
       "label": "Расстояние от левой стены дома до конька",
       "def": 4,
       "group": "basics"
     },
     "from_right_wall_to_apex": {
-      "id": "A30",
+      "id": "C30",
       "type": "number",
       "label": "Высота 2-го этажа",
       "def": 5,
       "group": "basics"
     },
 
+    "overlap_zero_floor": {
+      "id": "A33",
+      "type": "select",
+      "label": "Перекрытие 0-го этажа, В/Ш",
+      "variants": [
+        "Нет перекрытия",
+        "Sip панель 2500*625*124мм",
+        "Sip панель 2500*625*174мм",
+        "Sip панель 2500*625*224мм",
+        "Брус естественной влажности, 200*100мм",
+        "Брус естественной влажности, 150*100мм",
+        "Брус естественной влажности, 100*100мм",
+        "Брус естественной влажности, 150*150мм",
+        "Доска естественной влажности, 200*50мм",
+        "Доска естественной влажности, 150*50мм",
+        "Доска сухая, 200*50мм",
+        "Доска сухая, 150*50мм",
+        "Доска сухая калиброванная, 190*45мм",
+        "Доска сухая калиброванная, 145*45мм",
+        "Монолит, бетон, 300мм, 2 слоя",
+        "Монолит, бетон, 300мм, 1 слоя",
+        "Монолит, бетон, 250мм, 2 слоя",
+        "Монолит, бетон, 250мм, 1 слоя",
+        "Монолит, бетон, 200мм, 2 слоя",
+        "Монолит, бетон, 200мм, 1 слоя",
+        "Монолит, бетон, 150мм, 2 слоя",
+        "Монолит, бетон, 150мм, 1 слоя",
+        "Плита перекрытия ЖБИ",
+        "Двутавровая деревянная балка, 400*65мм",
+        "Двутавровая деревянная балка, 400*90мм",
+        "Двутавровая деревянная балка, 350*65мм",
+        "Двутавровая деревянная балка, 350*90мм",
+        "Двутавровая деревянная балка, 300*65мм",
+        "Двутавровая деревянная балка, 300*90мм",
+        "Двутавровая деревянная балка, 240*65мм",
+        "Двутавровая деревянная балка, 240*90мм",
+        "Двутавровая деревянная балка, 200*65мм",
+        "Двутавровая деревянная балка, 200*90мм",
+        "Двутавровая деревянная балка, 150*65мм",
+        "Двутавровая деревянная балка, 150*90мм",
+        "ГПС 100x50-1,2",
+        "ГПС 100x50-1,5",
+        "ГПС 120x50-1,5",
+        "ГПС 120x50-2,0",
+        "ГПС 150x50-1,2",
+        "ГПС 150x50-1,5",
+        "ГПС 150x50-2,0",
+        "ГПС 170x50-1,2",
+        "ГПС 170x50-1,5",
+        "ГПС 170x50-2,0",
+        "ГПС 200x50-1,2",
+        "ГПС 200x50-1,5",
+        "ГПС 200x50-2,0",
+        "ГПС 250x50-1,2",
+        "ГПС 250x50-1,5",
+        "ГПС 250x50-2,0",
+        "ГПС 280x50-1,2",
+        "ГПС 280x50-1,5",
+        "ГПС 280x50-2,0"
+      ],
+      "group": "overlap_zero_floor"
+    },
+    "zero_floor_balk_step": {
+      "id": "C33",
+      "type": "number",
+      "label": "Шаг бруса",
+      "def": 0.6,
+      "group": "overlap_zero_floor"
+    },
+    "zero_floor_armature": {
+      "id": "D33",
+      "type": "select",
+      "label": "Арматура",
+      "def": "Арматура М8 ",
+      "variants": [
+        "Арматура М8 ",
+        "Арматура М10",
+        "Арматура М12",
+        "Арматура М14",
+        "Арматура М16",
+        "Арматура М18",
+        "Арматура М20"
+      ],
+      "group": "overlap_zero_floor"
+    },
+    "zero_floor_armature_step": {
+      "id": "E33",
+      "type": "number",
+      "label": "Шаг арматуры",
+      "def": 0.15,
+      "group": "overlap_zero_floor"
+    },
+    "first_floor_balk_step": {
+      "id": "C43",
+      "type": "number",
+      "label": "Шаг бруса",
+      "def": 0.6,
+      "group": "overlap_zero_floor"
+    },
+    "first_floor_armature": {
+      "id": "D43",
+      "type": "select",
+      "label": "Арматура",
+      "def": "Арматура М10",
+      "variants": [
+        "Арматура М8 ",
+        "Арматура М10",
+        "Арматура М12",
+        "Арматура М14",
+        "Арматура М16",
+        "Арматура М18",
+        "Арматура М20"
+      ],
+      "group": "overlap_zero_floor"
+    },
+    "first_floor_armature_step": {
+      "id": "E43",
+      "type": "number",
+      "label": "Шаг арматуры",
+      "def": 0.2,
+      "group": "overlap_zero_floor"
+    },
+
+    "second_floor_balk_step": {
+      "id": "C43",
+      "type": "number",
+      "label": "Шаг бруса",
+      "def": 0.6,
+      "group": "overlap_zero_floor"
+    },
+    "second_floor_armature": {
+      "id": "D43",
+      "type": "select",
+      "label": "Арматура",
+      "def": "Арматура М12",
+      "variants": [
+        "Арматура М8 ",
+        "Арматура М10",
+        "Арматура М12",
+        "Арматура М14",
+        "Арматура M16",
+        "Арматура M18",
+        "Арматура M20"
+      ],
+      "group": "overlap_zero_floor"
+    },
+    "second_floor_armature_step": {
+      "id": "E43",
+      "type": "number",
+      "label": "Шаг арматуры",
+      "def": 0.25,
+      "group": "overlap_zero_floor"
+    },
+
+    "overlaps_transport_first": {
+      "id": "C60",
+      "type": "number",
+      "label": "Транспорт для перекрытий",
+      "def": 1,
+      "group": "overlap_zero_floor"
+    },
+    "overlaps_transport_second": {
+      "id": "C61",
+      "type": "number",
+      "label": "Транспорт для перекрытий",
+      "def": 1,
+      "group": "overlap_zero_floor"
+    },
+    "overlaps_transport_third": {
+      "id": "C62",
+      "type": "number",
+      "label": "Транспорт для перекрытий",
+      "def": 0,
+      "group": "overlap_zero_floor"
+    },
+
+
+    "windows_width_first_floor": {
+      "id": "C68",
+      "type": "number",
+      "label": "Ширина окон 1 эт",
+      "def": 1,
+      "group": "windows_doors",
+      "subgroup": "windows"
+    },
+    "windows_height_first_floor": {
+      "id": "D68",
+      "type": "number",
+      "label": "Высота окон 1 эт",
+      "def": 1.2,
+      "group": "windows_doors",
+      "subgroup": "windows"
+    },
+    "windows_count_first_floor": {
+      "id": "E68",
+      "type": "number",
+      "label": "Кол-во",
+      "def": 1.2,
+      "group": "windows_doors",
+      "subgroup": "windows"
+    },
+
+    "door_welcome_width": {
+      "id": "C85",
+      "type": "number",
+      "label": "Ширина входной двери",
+      "def": 0.8,
+      "group": "windows_doors",
+      "subgroup": "doors"
+    },
+    "door_welcome_height": {
+      "id": "D85",
+      "type": "number",
+      "label": "Высота входной двери",
+      "def": 2.1,
+      "group": "windows_doors",
+      "subgroup": "doors"
+    },
+    "door_welcome_count": {
+      "id": "E85",
+      "type": "number",
+      "label": "Кол-во",
+      "def": 0,
+      "group": "windows_doors",
+      "subgroup": "doors"
+    },
+
+    "door_in_width": {
+      "id": "C91",
+      "type": "number",
+      "label": "Ширина внут дверей",
+      "def": 0.8,
+      "group": "windows_doors",
+      "subgroup": "doors"
+    },
+    "door_in_height": {
+      "id": "D91",
+      "type": "number",
+      "label": "Высота внут дверей",
+      "def": 2.1,
+      "group": "windows_doors",
+      "subgroup": "doors"
+    },
+    "door_in_count": {
+      "id": "E91",
+      "type": "number",
+      "label": "Кол-во",
+      "def": 0,
+      "group": "windows_doors",
+      "subgroup": "doors"
+    },
+
+    "windows_width_second_floor": {
+      "id": "C77",
+      "type": "number",
+      "label": "Ширина окон 2 эт",
+      "def": 0.6,
+      "group": "windows_doors",
+      "subgroup": "windows"
+    },
+    "windows_height_second_floor": {
+      "id": "D77",
+      "type": "number",
+      "label": "Высота окон 2 эт",
+      "def": 0.6,
+      "group": "windows_doors",
+      "subgroup": "windows"
+    },
+    "windows_count_second_floor": {
+      "id": "E77",
+      "type": "number",
+      "label": "Кол-во",
+      "def": 0,
+      "group": "windows_doors",
+      "subgroup": "windows"
+    },
 
     "stairs_count": {
       "id": "B1128",

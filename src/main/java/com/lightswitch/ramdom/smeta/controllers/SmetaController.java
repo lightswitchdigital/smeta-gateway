@@ -9,11 +9,14 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.xssf.usermodel.XSSFDataValidation;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.bind.annotation.*;
 import java.io.*;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 @RequestMapping(path = "/api/v1/calculate")
@@ -103,10 +106,8 @@ public class SmetaController {
 
 //        Getting final result
         Cell cell = this.getCell(workbook, this.mappings.getCellID("result"));
-        Double cellValue = evaluator.evaluate(cell).getNumberValue();
-        cell.getCellType();
 
-        return cellValue;
+        return evaluator.evaluate(cell).getNumberValue();
     }
 
     // Getters

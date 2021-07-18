@@ -29,7 +29,7 @@ public class WorkbooksPool {
 
             XSSFWorkbook wb = this.cloneWorkbook(workbook);
 
-            System.out.println("Adding workbook " + (i + 1));
+            System.out.println("Added workbook " + (i + 1));
 
             this.pool.add(wb);
         }
