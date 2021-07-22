@@ -146,11 +146,14 @@ public class SmetaController {
     }
 
     private void resetCellsValues(XSSFWorkbook workbook) {
+        Integer counter = 0;
         for (Map.Entry<String, com.lightswitch.ramdom.smeta.mappings.Cell> entry : this.mappings.cells.entrySet()) {
             String id = entry.getValue().id;
             String def = entry.getValue().def;
 
             this.setCellValue(workbook, id, def);
+            counter++;
         }
+        System.out.println(counter);
     }
 }
