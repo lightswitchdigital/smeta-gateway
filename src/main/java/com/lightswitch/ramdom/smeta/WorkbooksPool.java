@@ -1,13 +1,16 @@
 package com.lightswitch.ramdom.smeta;
 
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.stereotype.Repository;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
+@Repository
 public class WorkbooksPool {
 
-    private List<XSSFWorkbook> pool;
+    private final List<XSSFWorkbook> pool;
     private final String program_path;
 
     private final Integer workbooks_count;
@@ -18,9 +21,12 @@ public class WorkbooksPool {
         this.program_path = "/src/program.xlsx";
         this.workbooks_count = 2;
 
+    }
+
+    public void loadWorkbooks() {
         long startTime = System.nanoTime();
 
-        System.out.println("Loading workbooks into the pool ("+this.workbooks_count+")");
+        System.out.println("Loading workbooks into the pool (" + this.workbooks_count + ")");
 
         XSSFWorkbook workbook = this.getProgram();
 
@@ -34,7 +40,7 @@ public class WorkbooksPool {
         }
 
         long elapsedTime = System.nanoTime() - startTime;
-        double seconds = (double)elapsedTime / 1_000_000_000.0;
+        double seconds = (double) elapsedTime / 1_000_000_000.0;
 
         System.out.println("Workbooks loading took: " + Math.round(seconds) + "s");
     }

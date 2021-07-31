@@ -1,6 +1,5 @@
 {
     "cells": {
-
         "building_type_by_floors": {
             "id": "A6",
             "type": "select",
@@ -57,7 +56,6 @@
                 "1-ый эт брус 2-ой эт каркасник"
             ]
         },
-
         "building_width": {
             "id": "C11",
             "type": "number",
@@ -153,7 +151,6 @@
             "def": 5,
             "group": "Выбор расположения конька"
         },
-
         "overlap_zero_floor": {
             "id": "A33",
             "type": "select",
@@ -277,7 +274,6 @@
             "def": 0.2,
             "group": "overlap_zero_floor"
         },
-
         "second_floor_balk_step": {
             "id": "C43",
             "type": "number",
@@ -308,7 +304,6 @@
             "def": 0.25,
             "group": "overlap_zero_floor"
         },
-
         "overlaps_transport_first": {
             "id": "C60",
             "type": "number",
@@ -330,8 +325,6 @@
             "def": 0,
             "group": "overlap_zero_floor"
         },
-
-
         "windows_width_first_floor": {
             "id": "C68",
             "type": "number",
@@ -348,14 +341,14 @@
             "group": "windows_doors",
             "subgroup": "windows"
         },
-        "windows_count_first_floor": {
-            "id": "E68",
-            "type": "number",
-            "label": "Кол-во",
-            "def": 1,
-            "group": "windows_doors",
-            "subgroup": "windows"
-        },
+        //        "windows_count_first_floor": {
+        //            "id": "E68",
+        //            "type": "number",
+        //            "label": "Кол-во",
+        //            "def": 1,
+        //            "group": "windows_doors",
+        //            "subgroup": "windows"
+        //        },
 
         "door_welcome_width": {
             "id": "C85",
@@ -381,7 +374,6 @@
             "group": "windows_doors",
             "subgroup": "doors"
         },
-
         "door_in_width": {
             "id": "C91",
             "type": "number",
@@ -406,7 +398,6 @@
             "group": "windows_doors",
             "subgroup": "doors"
         },
-
         "windows_width_second_floor": {
             "id": "C77",
             "type": "number",
@@ -431,7 +422,6 @@
             "group": "windows_doors",
             "subgroup": "windows"
         },
-
         "stairs_count": {
             "id": "B1128",
             "type": "integer",
@@ -481,14 +471,10 @@
             "group": "stairs",
             "subgroup": "params"
         },
-
         "result": {
-            "id" : "A2",
-            "def" : 0
+            "id": "A2",
+            "def": 0
         },
-
-
-
         "transport_for_overlappings": {
             "id": "A60",
             "type": "select",

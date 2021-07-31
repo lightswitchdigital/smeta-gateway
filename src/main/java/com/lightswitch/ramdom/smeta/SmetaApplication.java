@@ -2,12 +2,8 @@ package com.lightswitch.ramdom.smeta;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.lightswitch.ramdom.smeta"})
 public class SmetaApplication {
 
 	public static void main(String[] args) {
