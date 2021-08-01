@@ -2,6 +2,7 @@ package com.lightswitch.ramdom.smeta.controllers;
 
 import com.lightswitch.ramdom.smeta.Mappings;
 import com.lightswitch.ramdom.smeta.WorkbooksPool;
+import com.lightswitch.ramdom.smeta.protocol.Protocol;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
@@ -30,6 +31,22 @@ public class SmetaController {
 
         this.pool = new WorkbooksPool();
         this.pool.loadWorkbooks();
+    }
+
+    @GetMapping("/test")
+    public void test() {
+        Protocol.Command.Builder builder = Protocol.Command.newBuilder()
+                .setClient("js");
+
+        String[] values = new String[]{"privet", "poka", "azaza", "lox"};
+        for (String value :
+                values) {
+            builder.putValues(value, "123123");
+        }
+
+        Protocol.Command command = builder.build();
+
+        System.out.println(command);
     }
 
     public void greet() {
