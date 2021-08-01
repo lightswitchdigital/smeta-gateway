@@ -1,6 +1,8 @@
 package com.lightswitch.ramdom.smeta;
 
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
@@ -9,6 +11,8 @@ import java.util.List;
 
 @Repository
 public class WorkbooksPool {
+
+    Logger logger = LoggerFactory.getLogger(WorkbooksPool.class);
 
     private final List<XSSFWorkbook> pool;
     private final String program_path;
@@ -26,7 +30,7 @@ public class WorkbooksPool {
     public void loadWorkbooks() {
         long startTime = System.nanoTime();
 
-        System.out.println("Loading workbooks into the pool (" + this.workbooks_count + ")");
+        logger.info("Loading workbooks into the pool (" + this.workbooks_count + ")");
 
         XSSFWorkbook workbook = this.getProgram();
 
@@ -34,7 +38,7 @@ public class WorkbooksPool {
 
             XSSFWorkbook wb = this.cloneWorkbook(workbook);
 
-            System.out.println("Added workbook " + (i + 1));
+            logger.info("Added workbook " + (i + 1));
 
             this.pool.add(wb);
         }
@@ -42,7 +46,7 @@ public class WorkbooksPool {
         long elapsedTime = System.nanoTime() - startTime;
         double seconds = (double) elapsedTime / 1_000_000_000.0;
 
-        System.out.println("Workbooks loading took: " + Math.round(seconds) + "s");
+        logger.info("Workbooks loading took: " + Math.round(seconds) + "s");
     }
 
     public XSSFWorkbook getWorkbook() {

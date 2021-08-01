@@ -8,6 +8,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,13 +19,29 @@ import java.util.Map;
 @RestController
 public class SmetaController {
 
+    Logger logger = LoggerFactory.getLogger(SmetaController.class);
+
     @Autowired
     public Mappings mappings;
     public WorkbooksPool pool;
 
     public SmetaController() {
+        this.greet();
+
         this.pool = new WorkbooksPool();
         this.pool.loadWorkbooks();
+    }
+
+    public void greet() {
+        System.out.println("    ____  ___    __  _______  ____  __  ___\n" +
+                "   / __ \\/   |  /  |/  / __ \\/ __ \\/  |/  /\n" +
+                "  / /_/ / /| | / /|_/ / / / / / / / /|_/ / \n" +
+                " / _, _/ ___ |/ /  / / /_/ / /_/ / /  / /  \n" +
+                "/_/ |_/_/  |_/_/  /_/_____/\\____/_/  /_/   \n" +
+                "                                           ");
+        System.out.println("|---- HTTP service for smeta calculation");
+        System.out.println("|---- Made and produced by LightSwitch");
+        System.out.println(" ");
     }
 
     @GetMapping("/api/v1/calculate")
@@ -60,19 +78,19 @@ public class SmetaController {
             try {
                 double value = Double.parseDouble(entry.getValue());
 
-                Cell valueCell = this.getCell(workbook, this.mappings.mappings.getCellID(name));
+                Cell valueCell = this.getCell(workbook, this.mappings.getCellID(name));
                 valueCell.setCellValue(value);
 
             }catch (NumberFormatException e) {
                 String value = entry.getValue();
 
-                Cell valueCell = this.getCell(workbook, this.mappings.mappings.getCellID(name));
+                Cell valueCell = this.getCell(workbook, this.mappings.getCellID(name));
                 valueCell.setCellValue(value);
             }
         }
 
 //        Getting final result
-        Cell cell = this.getCell(workbook, this.mappings.mappings.getCellID("result"));
+        Cell cell = this.getCell(workbook, this.mappings.getCellID("result"));
 
         return evaluator.evaluate(cell).getNumberValue();
     }
@@ -113,14 +131,11 @@ public class SmetaController {
     }
 
     private void resetCellsValues(XSSFWorkbook workbook) {
-        Integer counter = 0;
         for (Map.Entry<String, com.lightswitch.ramdom.smeta.mappings.Cell> entry : this.mappings.mappings.cells.entrySet()) {
             String id = entry.getValue().id;
             String def = entry.getValue().def;
 
             this.setCellValue(workbook, id, def);
-            counter++;
         }
-        System.out.println(counter);
     }
 }
