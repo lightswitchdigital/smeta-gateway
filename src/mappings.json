@@ -1,6 +1,5 @@
 {
     "cells": {
-
         "building_type_by_floors": {
             "id": "A6",
             "type": "select",
@@ -57,7 +56,6 @@
                 "1-ый эт брус 2-ой эт каркасник"
             ]
         },
-
         "building_width": {
             "id": "C11",
             "type": "number",
@@ -153,7 +151,6 @@
             "def": 5,
             "group": "Выбор расположения конька"
         },
-
         "overlap_zero_floor": {
             "id": "A33",
             "type": "select",
@@ -277,7 +274,6 @@
             "def": 0.2,
             "group": "overlap_zero_floor"
         },
-
         "second_floor_balk_step": {
             "id": "C43",
             "type": "number",
@@ -308,7 +304,6 @@
             "def": 0.25,
             "group": "overlap_zero_floor"
         },
-
         "overlaps_transport_first": {
             "id": "C60",
             "type": "number",
@@ -330,8 +325,6 @@
             "def": 0,
             "group": "overlap_zero_floor"
         },
-
-
         "windows_width_first_floor": {
             "id": "C68",
             "type": "number",
@@ -348,15 +341,6 @@
             "group": "windows_doors",
             "subgroup": "windows"
         },
-        "windows_count_first_floor": {
-            "id": "E68",
-            "type": "number",
-            "label": "Кол-во",
-            "def": 1,
-            "group": "windows_doors",
-            "subgroup": "windows"
-        },
-
         "door_welcome_width": {
             "id": "C85",
             "type": "number",
@@ -381,7 +365,6 @@
             "group": "windows_doors",
             "subgroup": "doors"
         },
-
         "door_in_width": {
             "id": "C91",
             "type": "number",
@@ -406,7 +389,6 @@
             "group": "windows_doors",
             "subgroup": "doors"
         },
-
         "windows_width_second_floor": {
             "id": "C77",
             "type": "number",
@@ -431,7 +413,397 @@
             "group": "windows_doors",
             "subgroup": "windows"
         },
-
+        "welcome_door_width_var1": {
+            "id": "C85",
+            "type": "number",
+            "label": "Дверь входная 1 - ширина",
+            "def": 0.8,
+            "group": "Данные для расчета окон/проемов",
+            "subgroup": "Двери входные. Наружные стены"
+        },
+        "welcome_door_height_var1": {
+            "id": "D85",
+            "type": "number",
+            "label": "Дверь входная 1 - высота",
+            "def": 2,
+            "group": "Данные для расчета окон/проемов",
+            "subgroup": "Двери входные. Наружные стены"
+        },
+        "welcome_door_count_var1": {
+            "id": "E85",
+            "type": "number",
+            "label": "Дверь входная 1 - кол-во",
+            "def": 0,
+            "group": "Данные для расчета окон/проемов",
+            "subgroup": "Двери входные. Наружные стены"
+        },
+        "welcome_door_width_var2": {
+            "id": "C86",
+            "type": "number",
+            "label": "Дверь входная 2 - ширина",
+            "def": 0.9,
+            "group": "Данные для расчета окон/проемов",
+            "subgroup": "Двери входные. Наружные стены"
+        },
+        "welcome_door_height_var2": {
+            "id": "D86",
+            "type": "number",
+            "label": "Дверь входная 2 - высота",
+            "def": 2.1,
+            "group": "Данные для расчета окон/проемов",
+            "subgroup": "Двери входные. Наружные стены"
+        },
+        "welcome_door_count_var2": {
+            "id": "E86",
+            "type": "number",
+            "label": "Дверь входная 2 - кол-во",
+            "def": 0,
+            "group": "Данные для расчета окон/проемов",
+            "subgroup": "Двери входные. Наружные стены"
+        },
+        "welcome_door_width_var3": {
+            "id": "C87",
+            "type": "number",
+            "label": "Дверь входная 3 - ширина",
+            "def": 1.0,
+            "group": "Данные для расчета окон/проемов",
+            "subgroup": "Двери входные. Наружные стены"
+        },
+        "welcome_door_height_var3": {
+            "id": "D87",
+            "type": "number",
+            "label": "Дверь входная 3 - высота",
+            "def": 2.0,
+            "group": "Данные для расчета окон/проемов",
+            "subgroup": "Двери входные. Наружные стены"
+        },
+        "welcome_door_count_var3": {
+            "id": "E87",
+            "type": "number",
+            "label": "Дверь входная 3 - кол-во",
+            "def": 0.0,
+            "group": "Данные для расчета окон/проемов",
+            "subgroup": "Двери входные. Наружные стены"
+        },
+        "inside_door_width_var1": {
+            "id": "C91",
+            "type": "number",
+            "label": "Дверь 1 - несущие перегородки. Первый этаж - ширина",
+            "def": 0.8,
+            "group": "Данные для расчета окон/проемов",
+            "subgroup": "Двери межкомнатные/проемы"
+        },
+        "inside_door_height_var1": {
+            "id": "D91",
+            "type": "number",
+            "label": "Дверь 1 - несущие перегородки. Первый этаж - высота",
+            "def": 2.1,
+            "group": "Данные для расчета окон/проемов",
+            "subgroup": "Двери межкомнатные/проемы"
+        },
+        "inside_door_count_var1": {
+            "id": "E91",
+            "type": "number",
+            "label": "Дверь 1 - несущие перегородки. Первый этаж - кол-во",
+            "def": 0,
+            "group": "Данные для расчета окон/проемов",
+            "subgroup": "Двери межкомнатные/проемы"
+        },
+        "inside_door_width_var2": {
+            "id": "C92",
+            "type": "number",
+            "label": "Дверь 2 - несущие перегородки. Первый этаж - ширина",
+            "def": 0.6,
+            "group": "Данные для расчета окон/проемов",
+            "subgroup": "Двери межкомнатные/проемы"
+        },
+        "inside_door_height_var2": {
+            "id": "D92",
+            "type": "number",
+            "label": "Дверь 2 - несущие перегородки. Первый этаж - высота",
+            "def": 2,
+            "group": "Данные для расчета окон/проемов",
+            "subgroup": "Двери межкомнатные/проемы"
+        },
+        "inside_door_count_var2": {
+            "id": "E92",
+            "type": "number",
+            "label": "Дверь 2 - несущие перегородки. Первый этаж - кол-во",
+            "def": 0,
+            "group": "Данные для расчета окон/проемов",
+            "subgroup": "Двери межкомнатные/проемы"
+        },
+        "inside_without_door_width": {
+            "id": "C91",
+            "type": "number",
+            "label": "Проем без дверей. Первый этаж - ширина",
+            "def": 2,
+            "group": "Данные для расчета окон/проемов",
+            "subgroup": "Двери межкомнатные/проемы"
+        },
+        "inside_without_door_height": {
+            "id": "D91",
+            "type": "number",
+            "label": "Проем без дверей. Первый этаж - высота",
+            "def": 2.3,
+            "group": "Данные для расчета окон/проемов",
+            "subgroup": "Двери межкомнатные/проемы"
+        },
+        "inside_without_door_count": {
+            "id": "E91",
+            "type": "number",
+            "label": "Проем без дверей. Первый этаж - кол-во",
+            "def": 0,
+            "group": "Данные для расчета окон/проемов",
+            "subgroup": "Двери межкомнатные/проемы"
+        },
+        "fl_2_inside_door_width_var1": {
+            "id": "C99",
+            "type": "number",
+            "label": "Дверь 1 - несущие перегородки. Второй этаж - ширина",
+            "def": 0.8,
+            "group": "Данные для расчета окон/проемов",
+            "subgroup": "Двери межкомнатные/проемы"
+        },
+        "fl_2_inside_door_height_var1": {
+            "id": "D99",
+            "type": "number",
+            "label": "Дверь 1 - несущие перегородки. Второй этаж - высота",
+            "def": 2.1,
+            "group": "Данные для расчета окон/проемов",
+            "subgroup": "Двери межкомнатные/проемы"
+        },
+        "fl_2_inside_door_count_var1": {
+            "id": "E99",
+            "type": "number",
+            "label": "Дверь 1 - несущие перегородки. Второй этаж - кол-во",
+            "def": 0,
+            "group": "Данные для расчета окон/проемов",
+            "subgroup": "Двери межкомнатные/проемы"
+        },
+        "fl_2_inside_door_width_var2": {
+            "id": "C100",
+            "type": "number",
+            "label": "Дверь 2 - несущие перегородки. Второй этаж - ширина",
+            "def": 1,
+            "group": "Данные для расчета окон/проемов",
+            "subgroup": "Двери межкомнатные/проемы"
+        },
+        "fl_2_inside_door_height_var2": {
+            "id": "D100",
+            "type": "number",
+            "label": "Дверь 2 - несущие перегородки. Второй этаж - высота",
+            "def": 2,
+            "group": "Данные для расчета окон/проемов",
+            "subgroup": "Двери межкомнатные/проемы"
+        },
+        "fl_2_inside_door_count_var2": {
+            "id": "E100",
+            "type": "number",
+            "label": "Дверь 2 - несущие перегородки. Второй этаж - кол-во",
+            "def": 0,
+            "group": "Данные для расчета окон/проемов",
+            "subgroup": "Двери межкомнатные/проемы"
+        },
+        "fl_2_inside_without_door_width": {
+            "id": "C101",
+            "type": "number",
+            "label": "Проем без дверей. Второй этаж - ширина",
+            "def": 2,
+            "group": "Данные для расчета окон/проемов",
+            "subgroup": "Двери межкомнатные/проемы"
+        },
+        "fl_2_inside_without_door_height": {
+            "id": "D101",
+            "type": "number",
+            "label": "Проем без дверей. Второй этаж - высота",
+            "def": 2.2,
+            "group": "Данные для расчета окон/проемов",
+            "subgroup": "Двери межкомнатные/проемы"
+        },
+        "fl_2_inside_without_door_count": {
+            "id": "E101",
+            "type": "number",
+            "label": "Проем без дверей. Второй этаж - кол-во",
+            "def": 0,
+            "group": "Данные для расчета окон/проемов",
+            "subgroup": "Двери межкомнатные/проемы"
+        },
+        "roof_release_cornice_j": {
+            "id": "C160",
+            "type": "number",
+            "label": "Выпуск кровли карниз, J",
+            "def": 0.8,
+            "group": "Кровля односкатная"
+        },
+        "roof_release_cornice_j1": {
+            "id": "C161",
+            "type": "number",
+            "label": "Выпуск кровли карниз, J1",
+            "def": 1,
+            "group": "Кровля односкатная"
+        },
+        "roof_release_cornice_fronton_m": {
+            "id": "C162",
+            "type": "number",
+            "label": "Выпуск кровли фронтон, M",
+            "def": 0.7,
+            "group": "Кровля односкатная"
+        },
+        "roof_release_cornice_fronton_m1": {
+            "id": "C163",
+            "type": "number",
+            "label": "Выпуск кровли фронтон, M1",
+            "def": 1.0,
+            "group": "Кровля односкатная"
+        },
+        "additional_ramp_length": {
+            "id": "C166",
+            "type": "number",
+            "label": "Дополнительный скат №1 - длина",
+            "def": 3.0,
+            "group": "Кровля односкатная"
+        },
+        "additional_ramp_width": {
+            "id": "D166",
+            "type": "number",
+            "label": "Дополнительный скат №1 - ширина",
+            "def": 2.0,
+            "group": "Кровля односкатная"
+        },
+        "sewer_pipe": {
+            "id": "C166",
+            "type": "number",
+            "label": "Труба канализационная - кол-во",
+            "def": 0.0,
+            "group": "Кровля односкатная"
+        },
+        "ventilation_pipe": {
+            "id": "C167",
+            "type": "number",
+            "label": "Труба вентиляционная - кол-во",
+            "def": 0.0,
+            "group": "Кровля односкатная"
+        },
+        "boiler_pipe": {
+            "id": "C168",
+            "type": "number",
+            "label": "Труба для котла - кол-во",
+            "def": 0.0,
+            "group": "Кровля односкатная"
+        },
+        "roof_release_cornice_j_2": {
+            "id": "C206",
+            "type": "number",
+            "label": "Выпуск кровли карниз, J",
+            "def": 0.5,
+            "group": "Кровля двускатная"
+        },
+        "roof_release_cornice_j1_2": {
+            "id": "C207",
+            "type": "number",
+            "label": "Выпуск кровли карниз, J1",
+            "def": 0.5,
+            "group": "Кровля двускатная"
+        },
+        "roof_release_cornice_fronton_m_2": {
+            "id": "C208",
+            "type": "number",
+            "label": "Выпуск кровли фронтон, M",
+            "def": 0.8,
+            "group": "Кровля двускатная"
+        },
+        "roof_release_cornice_fronton_m1_2": {
+            "id": "C209",
+            "type": "number",
+            "label": "Выпуск кровли фронтон, M1",
+            "def": 0.8,
+            "group": "Кровля двускатная"
+        },
+        "sewer_pipe_2": {
+            "id": "C225",
+            "type": "number",
+            "label": "Труба канализационная - кол-во",
+            "def": 0.0,
+            "group": "Кровля двускатная"
+        },
+        "ventilation_pipe_2": {
+            "id": "C226",
+            "type": "number",
+            "label": "Труба вентиляционная - кол-во",
+            "def": 0.0,
+            "group": "Кровля двускатная"
+        },
+        "boiler_pipe_2": {
+            "id": "C227",
+            "type": "number",
+            "label": "Труба для котла - кол-во",
+            "def": 0.0,
+            "group": "Кровля двускатная"
+        },
+        "roof_apex_length_o_valm": {
+            "id": "C248",
+            "type": "number",
+            "label": "Длина конька кровли, O",
+            "def": 5.0,
+            "group": "Кровля вальмовая"
+        },
+        "roof_release_cornice_j_valm": {
+            "id": "C249",
+            "type": "number",
+            "label": "Выпуск кровли карниз, J",
+            "def": 0.5,
+            "group": "Кровля вальмовая"
+        },
+        "roof_release_cornice_fronton_m_valm": {
+            "id": "C250",
+            "type": "number",
+            "label": "Выпуск кровли фронтон, M",
+            "def": 0.5,
+            "group": "Кровля вальмовая"
+        },
+        "sewer_pipe_valm": {
+            "id": "C261",
+            "type": "number",
+            "label": "Труба канализационная - кол-во",
+            "def": 0.0,
+            "group": "Кровля вальмовая"
+        },
+        "ventilation_pipe_valm": {
+            "id": "C262",
+            "type": "number",
+            "label": "Труба вентиляционная - кол-во",
+            "def": 0.0,
+            "group": "Кровля вальмовая"
+        },
+        "boiler_pipe_valm": {
+            "id": "C263",
+            "type": "number",
+            "label": "Труба для котла - кол-во",
+            "def": 0.0,
+            "group": "Кровля вальмовая"
+        },
+        "sewer_pipe_halfvalm": {
+            "id": "C300",
+            "type": "number",
+            "label": "Труба канализационная - кол-во",
+            "def": 0.0,
+            "group": "Кровля полувальмовая"
+        },
+        "ventilation_pipe_halfvalm": {
+            "id": "C301",
+            "type": "number",
+            "label": "Труба вентиляционная - кол-во",
+            "def": 0.0,
+            "group": "Кровля полувальмовая"
+        },
+        "boiler_pipe_halfvalm": {
+            "id": "C302",
+            "type": "number",
+            "label": "Труба для котла - кол-во",
+            "def": 0.0,
+            "group": "Кровля полувальмовая"
+        },
         "stairs_count": {
             "id": "B1128",
             "type": "integer",
@@ -481,14 +853,10 @@
             "group": "stairs",
             "subgroup": "params"
         },
-
         "result": {
-            "id" : "A2",
-            "def" : 0
+            "id": "A2",
+            "def": 0
         },
-
-
-
         "transport_for_overlappings": {
             "id": "A60",
             "type": "select",
