@@ -804,6 +804,440 @@
             "def": 0.0,
             "group": "Кровля полувальмовая"
         },
+        "elements_of_roof_count_1": {
+            "id": "C326",
+            "type": "number",
+            "label": "Выбрать количество элементов №1",
+            "def": 2,
+            "group": "Элементы кровли"
+        },
+        "elements_of_roof_count_2": {
+            "id": "D326",
+            "type": "number",
+            "label": "Выбрать количество элементов №1",
+            "def": 1,
+            "group": "Элементы кровли"
+        },
+        "release_of_roof_carnice": {
+            "id": "C327",
+            "type": "number",
+            "label": "Выпуск кровли карниз №1",
+            "def": 0.4,
+            "group": "Элементы кровли"
+        },
+        "release_of_roof_fronton_1": {
+            "id": "C328",
+            "type": "number",
+            "label": "Выпуск кровли фронтон №1",
+            "def": 0.4,
+            "group": "Элементы кровли"
+        },
+        "release_of_roof_fronton_1": {
+            "id": "D328",
+            "type": "number",
+            "label": "Выпуск кровли фронтон №2",
+            "def": 0.4,
+            "group": "Элементы кровли"
+        },
+        "roof_elements_height_e_1": {
+            "id": "C329",
+            "type": "number",
+            "label": "высота, Е №1",
+            "def": 2.0,
+            "group": "Элементы кровли"
+        },
+        "roof_elements_height_e_2": {
+            "id": "D329",
+            "type": "number",
+            "label": "высота, Е №2",
+            "def": 2,
+            "group": "Элементы кровли"
+        },
+        "roof_elements_height_e1": {
+            "id": "C330",
+            "type": "number",
+            "label": "высота, Е1",
+            "def": 1,
+            "group": "Элементы кровли"
+        },
+        "roof_elements_length_u_1": {
+            "id": "C331",
+            "type": "number",
+            "label": "Длина, U №1",
+            "def": 1.0,
+            "group": "Элементы кровли"
+        },
+        "roof_elements_length_u_2": {
+            "id": "D331",
+            "type": "number",
+            "label": "Длина, U №2",
+            "def": 0.0,
+            "group": "Элементы кровли"
+        },
+        "roof_elements_width_k_1": {
+            "id": "C332",
+            "type": "number",
+            "label": "Ширина, K №1",
+            "def": 2.0,
+            "group": "Элементы кровли"
+        },
+        "roof_elements_width_k_2": {
+            "id": "D332",
+            "type": "number",
+            "label": "Ширина, K №2",
+            "def": 2.5,
+            "group": "Элементы кровли"
+        },
+        "roof_apex_length_without_reelease_o_1": {
+            "id": "C333",
+            "type": "number",
+            "label": "длина конька без выпуска, O №1",
+            "def": 2.0,
+            "group": "Элементы кровли"
+        },
+        "roof_apex_length_without_reelease_o_2": {
+            "id": "D333",
+            "type": "number",
+            "label": "длина конька без выпуска, O №2",
+            "def": 3.0,
+            "group": "Элементы кровли"
+        },
+        "D362": {
+            "id": "D362",
+            "type": "number",
+            "label": "Данные",
+            "def": 3.0,
+            "group": "Пристройка к основной части дома"
+        },
+        "D366": {
+            "id": "D366",
+            "type": "number",
+            "label": "Данные",
+            "def": 2.0,
+            "group": "Пристройка к основной части дома"
+        },
+        "D370": {
+            "id": "D370",
+            "type": "number",
+            "label": "Данные",
+            "def": 3.0,
+            "group": "Пристройка к основной части дома"
+        },
+        "D374": {
+            "id": "D374",
+            "type": "number",
+            "label": "Данные",
+            "def": 2.5,
+            "group": "Пристройка к основной части дома"
+        },
+        "extension_count_1": {
+            "id": "C378",
+            "type": "number",
+            "label": "Количество 1",
+            "def": 1,
+            "group": "Пристройка к основной части дома"
+        },
+        "extension_count_2": {
+            "id": "D378",
+            "type": "number",
+            "label": "Количество 2",
+            "def": 1,
+            "group": "Пристройка к основной части дома"
+        },
+        "extension_count_3": {
+            "id": "E378",
+            "type": "number",
+            "label": "Количество 3",
+            "def": 1,
+            "group": "Пристройка к основной части дома"
+        },
+        "extension_count_4": {
+            "id": "F378",
+            "type": "number",
+            "label": "Количество 4",
+            "def": 1,
+            "group": "Пристройка к основной части дома"
+        },
+        "extension_building_width_1": {
+            "id": "C379",
+            "type": "number",
+            "label": "Ширина дома, A 1",
+            "def": 3,
+            "group": "Пристройка к основной части дома"
+        },
+        "extension_building_width_2": {
+            "id": "D379",
+            "type": "number",
+            "label": "Ширина дома, A 2",
+            "def": 3,
+            "group": "Пристройка к основной части дома"
+        },
+        "extension_building_width_3": {
+            "id": "E379",
+            "type": "number",
+            "label": "Ширина дома, A 3",
+            "def": 3,
+            "group": "Пристройка к основной части дома"
+        },
+        "extension_building_width_4": {
+            "id": "F379",
+            "type": "number",
+            "label": "Ширина дома, A 4",
+            "def": 3,
+            "group": "Пристройка к основной части дома"
+        },
+        "extension_building_length_1": {
+            "id": "C380",
+            "type": "number",
+            "label": "Длина дома, B 1",
+            "def": 6,
+            "group": "Пристройка к основной части дома"
+        },
+        "extension_building_length_2": {
+            "id": "D380",
+            "type": "number",
+            "label": "Длина дома, B 2",
+            "def": 3,
+            "group": "Пристройка к основной части дома"
+        },
+        "extension_building_length_3": {
+            "id": "E380",
+            "type": "number",
+            "label": "Длина дома, B 3",
+            "def": 3,
+            "group": "Пристройка к основной части дома"
+        },
+        "extension_building_length_4": {
+            "id": "F380",
+            "type": "number",
+            "label": "Длина дома, B 4",
+            "def": 5,
+            "group": "Пристройка к основной части дома"
+        },
+        "extension_first_floor_height_1": {
+            "id": "C381",
+            "type": "number",
+            "label": "Высота 1-го этажа, С 1",
+            "def": 2.90,
+            "group": "Пристройка к основной части дома"
+        },
+        "extension_first_floor_height_2": {
+            "id": "D381",
+            "type": "number",
+            "label": "Высота 1-го этажа, С 2",
+            "def": 2.9,
+            "group": "Пристройка к основной части дома"
+        },
+        "extension_first_floor_height_3": {
+            "id": "E381",
+            "type": "number",
+            "label": "Высота 1-го этажа, С 3",
+            "def": 2.9,
+            "group": "Пристройка к основной части дома"
+        },
+        "extension_first_floor_height_4": {
+            "id": "F381",
+            "type": "number",
+            "label": "Высота 1-го этажа, С 4",
+            "def": 3,
+            "group": "Пристройка к основной части дома"
+        },
+        "C382": {
+            "id": "C382",
+            "type": "number",
+            "label": "Высота от перекрытий 0 эт до конька - 1",
+            "def": 5.0,
+            "group": "Пристройка к основной части дома"
+        },
+        "D382": {
+            "id": "D382",
+            "type": "number",
+            "label": "Высота от перекрытий 0 эт до конька - 2",
+            "def": 4.1,
+            "group": "Пристройка к основной части дома"
+        },
+        "E382": {
+            "id": "E382",
+            "type": "number",
+            "label": "Высота от перекрытий 0 эт до конька - 3",
+            "def": 6,
+            "group": "Пристройка к основной части дома"
+        },
+        "F382": {
+            "id": "F382",
+            "type": "number",
+            "label": "Высота от перекрытий 0 эт до конька - 4",
+            "def": 4,
+            "group": "Пристройка к основной части дома"
+        },
+        "C383": {
+            "id": "C383",
+            "type": "number",
+            "label": "Аттиковая стена, мансардный этаж - 1",
+            "def": 1.2,
+            "group": "Пристройка к основной части дома"
+        },
+        "D383": {
+            "id": "D383",
+            "type": "number",
+            "label": "Аттиковая стена, мансардный этаж - 2",
+            "def": 2.1,
+            "group": "Пристройка к основной части дома"
+        },
+        "E383": {
+            "id": "E383",
+            "type": "number",
+            "label": "Аттиковая стена, мансардный этаж - 3",
+            "def": 1.5,
+            "group": "Пристройка к основной части дома"
+        },
+        "F383": {
+            "id": "F383",
+            "type": "number",
+            "label": "Аттиковая стена, мансардный этаж - 4",
+            "def": 2.7,
+            "group": "Пристройка к основной части дома"
+        },
+        "extension_second_floor_height_1": {
+            "id": "C384",
+            "type": "number",
+            "label": "Высота 2-го этажа, D - 1",
+            "def": 2.50,
+            "group": "Пристройка к основной части дома"
+        },
+        "extension_second_floor_height_2": {
+            "id": "D384",
+            "type": "number",
+            "label": "Высота 2-го этажа, D - 2",
+            "def": 2.2,
+            "group": "Пристройка к основной части дома"
+        },
+        "extension_second_floor_height_3": {
+            "id": "E384",
+            "type": "number",
+            "label": "Высота 2-го этажа, D - 3",
+            "def": 2.2,
+            "group": "Пристройка к основной части дома"
+        },
+        "extension_second_floor_height_4": {
+            "id": "F384",
+            "type": "number",
+            "label": "Высота 2-го этажа, D - 4",
+            "def": 2.7,
+            "group": "Пристройка к основной части дома"
+        },
+        "release_skat_1_1": {
+            "id": "C387",
+            "type": "number",
+            "label": "выпуск по скату 1 - 1",
+            "def": 0.50,
+            "group": "Пристройка к основной части дома"
+        },
+        "release_skat_1_2": {
+            "id": "D387",
+            "type": "number",
+            "label": "выпуск по скату 1 - 2",
+            "def": 0.6,
+            "group": "Пристройка к основной части дома"
+        },
+        "release_skat_1_3": {
+            "id": "E387",
+            "type": "number",
+            "label": "выпуск по скату 1 - 3",
+            "def": 0.6,
+            "group": "Пристройка к основной части дома"
+        },
+        "release_skat_1_4": {
+            "id": "F387",
+            "type": "number",
+            "label": "выпуск по скату 1 - 4",
+            "def": 0.6,
+            "group": "Пристройка к основной части дома"
+        },
+        "release_skat_2_1": {
+            "id": "C388",
+            "type": "number",
+            "label": "выпуск по скату 2 - 1",
+            "def": 0.70,
+            "group": "Пристройка к основной части дома"
+        },
+        "release_skat_2_2": {
+            "id": "D388",
+            "type": "number",
+            "label": "выпуск по скату 2 - 2",
+            "def": 0.6,
+            "group": "Пристройка к основной части дома"
+        },
+        "release_skat_2_3": {
+            "id": "E388",
+            "type": "number",
+            "label": "выпуск по скату 2 - 3",
+            "def": 0.6,
+            "group": "Пристройка к основной части дома"
+        },
+        "release_skat_2_4": {
+            "id": "F388",
+            "type": "number",
+            "label": "выпуск по скату 2 - 4",
+            "def": 0.6,
+            "group": "Пристройка к основной части дома"
+        },
+        "release_fronton_1_1": {
+            "id": "C389",
+            "type": "number",
+            "label": "выпуск по фронтону 1 - 1",
+            "def": 0.5,
+            "group": "Пристройка к основной части дома"
+        },
+        "release_fronton_1_2": {
+            "id": "D389",
+            "type": "number",
+            "label": "выпуск по фронтону 1 - 2",
+            "def": 0.5,
+            "group": "Пристройка к основной части дома"
+        },
+        "release_fronton_1_3": {
+            "id": "E389",
+            "type": "number",
+            "label": "выпуск по фронтону 1 - 3",
+            "def": 0.8,
+            "group": "Пристройка к основной части дома"
+        },
+        "release_fronton_1_4": {
+            "id": "F389",
+            "type": "number",
+            "label": "выпуск по фронтону 1 - 4",
+            "def": 0.8,
+            "group": "Пристройка к основной части дома"
+        },
+        "release_fronton_2_1": {
+            "id": "C390",
+            "type": "number",
+            "label": "выпуск по фронтону 2 - 1",
+            "def": 0.7,
+            "group": "Пристройка к основной части дома"
+        },
+        "release_fronton_2_2": {
+            "id": "D390",
+            "type": "number",
+            "label": "выпуск по фронтону 2 - 2",
+            "def": 0.40,
+            "group": "Пристройка к основной части дома"
+        },
+        "release_fronton_2_3": {
+            "id": "E390",
+            "type": "number",
+            "label": "выпуск по фронтону 2 - 3",
+            "def": 0.90,
+            "group": "Пристройка к основной части дома"
+        },
+        "release_fronton_2_4": {
+            "id": "F390",
+            "type": "number",
+            "label": "выпуск по фронтону 2 - 4",
+            "def": 0.90,
+            "group": "Пристройка к основной части дома"
+        },
         "stairs_count": {
             "id": "B1128",
             "type": "integer",
