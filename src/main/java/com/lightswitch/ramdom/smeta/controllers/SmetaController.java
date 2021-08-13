@@ -61,7 +61,7 @@ public class SmetaController {
         System.out.println(" ");
     }
 
-    @GetMapping("/api/v1/calculate")
+    @PostMapping("/api/v1/calculate")
     @ResponseBody
     public Double calculate(@RequestParam Map<String, String> params) {
         return this.getCalculatedPrice(params);

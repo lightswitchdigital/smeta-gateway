@@ -45,7 +45,14 @@ public class Mappings {
     }
 
     public String getCellID(String cellName) {
-        return this.getCell(cellName).id;
+        Cell cell = this.getCell(cellName);
+        if (cell != null) {
+            return cell.id;
+        }
+
+        this.logger.error("couldn't find cell id with name {}", cellName);
+        return "AZ999";
+
     }
 
     public Cell getCell(String cellName) {
