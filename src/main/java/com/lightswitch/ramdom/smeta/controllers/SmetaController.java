@@ -38,7 +38,7 @@ public class SmetaController {
         Protocol.Command.Builder builder = Protocol.Command.newBuilder()
                 .setClient("js");
 
-        String[] values = new String[]{"privet", "poka", "azaza", "lox"};
+        String[] values = new String[]{"1", "2", "3", "4"};
         for (String value :
                 values) {
             builder.putValues(value, "123123");
@@ -57,38 +57,85 @@ public class SmetaController {
                 "/_/ |_/_/  |_/_/  /_/_____/\\____/_/  /_/   \n" +
                 "                                           ");
         System.out.println("|---- HTTP service for smeta calculation");
+        System.out.println("|---- Use carefully");
         System.out.println("|---- Made and produced by LightSwitch");
+        System.out.println("|---- https://lightswitch.digital");
         System.out.println(" ");
     }
 
-    @PostMapping("/api/v1/calculate")
+    @GetMapping("/api/v1/calculate")
     @ResponseBody
     public Double calculate(@RequestParam Map<String, String> params) {
-        return this.getCalculatedPrice(params);
+        for (var entry : params.entrySet()) {
+            System.out.println(entry.getKey() + "/" + entry.getValue());
+        }
+        Double price = this.getCalculatedPrice(params);
+
+        System.out.println(price);
+
+        return price;
 //        return this.getTestCellValue();
     }
 
-    private Double getTestCellValue() {
-        XSSFWorkbook workbook = this.getWorkbook();
-        FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
+    // TODO: 11.09.2021 Сделать проверку на битые клетки
+//    @GetMapping("/validate-cells")
+//    public void validateCells() {
+//        XSSFWorkbook wb = this.getWorkbook();
+//        FormulaEvaluator evaluator = wb.getCreationHelper().createFormulaEvaluator();
+//
+//        ArrayList<String> maliciousCells = new ArrayList<>();
+//
+//        long startTime = System.nanoTime();
+//
+//        for (Map.Entry<String, com.lightswitch.ramdom.smeta.mappings.Cell> entry :
+//                this.mappings.mappings.cells.entrySet()) {
+//
+//            com.lightswitch.ramdom.smeta.mappings.Cell cell = entry.getValue();
+//
+//            this.setCellValue(wb, cell.id, cell.def);
+//            this.logger.debug("setting cell " + cell.id + " with value " + cell.def);
+//
+//            Cell resultCell = this.getCell(wb, this.mappings.getCellID("result"));
+//
+//            evaluator.clearAllCachedResultValues();
+//            double result = evaluator.evaluate(resultCell).getNumberValue();
+//
+//            if (result == 0.0) {
+////                this.logger.error("Encountered malicious cell: " + cell.id);
+//                maliciousCells.add(cell.id);
+//            }
+//        }
+//
+//        long endTime = System.nanoTime();
+//        long totalTime = endTime - startTime;
+//
+//        if (maliciousCells.size() > 0) {
+//            this.logger.error("Found malicious cells: ");
+//            maliciousCells
+//                    .stream()
+//                    .reduce((id1, id2) -> id1 + ", " + id2)
+//                    .ifPresent(this.logger::error);
+//        }else {
+//            this.logger.info("All cells are clear");
+//        }
+//    }
 
-        Cell cell =  this.getCell(workbook, "C11");
-        return cell.getNumericCellValue();
-//        Double value = evaluator.evaluate(cell).getNumberValue();
-
-//        return value;
-    }
-
-    private Double getCalculatedPrice(Map<String,String> params) {
+    private Double getCalculatedPrice(Map<String, String> params) {
 
         XSSFWorkbook workbook = this.getWorkbook();
         FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
 
 //        Resetting cells to default values
-        this.resetCellsValues(workbook);
+
+        for (Map.Entry<String, com.lightswitch.ramdom.smeta.mappings.Cell> entry : this.mappings.mappings.cells.entrySet()) {
+            String id = entry.getValue().id;
+            String def = entry.getValue().def;
+
+            this.setCellValue(workbook, id, def);
+        }
 
 //        Setting client provided values
-        for (Map.Entry<String,String> entry : params.entrySet()) {
+        for (Map.Entry<String, String> entry : params.entrySet()) {
 
             String name = entry.getKey();
 
@@ -109,6 +156,7 @@ public class SmetaController {
 //        Getting final result
         Cell cell = this.getCell(workbook, this.mappings.getCellID("result"));
 
+        evaluator.clearAllCachedResultValues();
         return evaluator.evaluate(cell).getNumberValue();
     }
 
@@ -145,14 +193,5 @@ public class SmetaController {
 
         cell.setCellValue(value);
 
-    }
-
-    private void resetCellsValues(XSSFWorkbook workbook) {
-        for (Map.Entry<String, com.lightswitch.ramdom.smeta.mappings.Cell> entry : this.mappings.mappings.cells.entrySet()) {
-            String id = entry.getValue().id;
-            String def = entry.getValue().def;
-
-            this.setCellValue(workbook, id, def);
-        }
     }
 }
