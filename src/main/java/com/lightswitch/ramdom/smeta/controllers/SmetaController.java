@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 @CrossOrigin(origins = "http://ramdom.test")
@@ -77,48 +78,57 @@ public class SmetaController {
 //        return this.getTestCellValue();
     }
 
-    // TODO: 11.09.2021 Сделать проверку на битые клетки
-//    @GetMapping("/validate-cells")
-//    public void validateCells() {
-//        XSSFWorkbook wb = this.getWorkbook();
-//        FormulaEvaluator evaluator = wb.getCreationHelper().createFormulaEvaluator();
-//
-//        ArrayList<String> maliciousCells = new ArrayList<>();
-//
-//        long startTime = System.nanoTime();
-//
-//        for (Map.Entry<String, com.lightswitch.ramdom.smeta.mappings.Cell> entry :
-//                this.mappings.mappings.cells.entrySet()) {
-//
-//            com.lightswitch.ramdom.smeta.mappings.Cell cell = entry.getValue();
-//
-//            this.setCellValue(wb, cell.id, cell.def);
-//            this.logger.debug("setting cell " + cell.id + " with value " + cell.def);
-//
-//            Cell resultCell = this.getCell(wb, this.mappings.getCellID("result"));
-//
-//            evaluator.clearAllCachedResultValues();
-//            double result = evaluator.evaluate(resultCell).getNumberValue();
-//
-//            if (result == 0.0) {
-////                this.logger.error("Encountered malicious cell: " + cell.id);
-//                maliciousCells.add(cell.id);
-//            }
-//        }
-//
-//        long endTime = System.nanoTime();
-//        long totalTime = endTime - startTime;
-//
-//        if (maliciousCells.size() > 0) {
-//            this.logger.error("Found malicious cells: ");
-//            maliciousCells
-//                    .stream()
-//                    .reduce((id1, id2) -> id1 + ", " + id2)
-//                    .ifPresent(this.logger::error);
-//        }else {
-//            this.logger.info("All cells are clear");
-//        }
-//    }
+    @GetMapping("/validate-cells")
+    public void validateCells() {
+
+        this.logger.info("Launching cells validation. This might take some time");
+
+        XSSFWorkbook wb = this.getWorkbook();
+        FormulaEvaluator evaluator = wb.getCreationHelper().createFormulaEvaluator();
+
+        ArrayList<String> maliciousCells = new ArrayList<>();
+
+        long startTime = System.nanoTime();
+
+        for (Map.Entry<String, com.lightswitch.ramdom.smeta.mappings.Cell> entry :
+                this.mappings.mappings.cells.entrySet()) {
+
+            // We want to test every cell individually, so we set default
+            // values for other cells
+
+            this.setDefaultCellValues(wb);
+
+            com.lightswitch.ramdom.smeta.mappings.Cell cell = entry.getValue();
+
+            this.setCellValue(wb, cell.id, cell.def);
+            this.logger.info("Setting cell " + cell.id + " to value " + cell.def);
+
+            Cell resultCell = this.getCell(wb, this.mappings.getCellID("result"));
+
+            evaluator.clearAllCachedResultValues();
+            double result = evaluator.evaluate(resultCell).getNumberValue();
+
+            if (result == 0.0) {
+                this.logger.error("Encountered malicious cell: " + cell.id);
+                maliciousCells.add(cell.id);
+            }
+        }
+
+        long endTime = System.nanoTime();
+        long totalTime = endTime - startTime;
+
+        if (maliciousCells.size() > 0) {
+            this.logger.error("Found malicious cells: ");
+            maliciousCells
+                    .stream()
+                    .reduce((id1, id2) -> id1 + ", " + id2)
+                    .ifPresent(this.logger::error);
+        } else {
+            this.logger.info("All cells are clear");
+        }
+
+        this.logger.info("Test took " + totalTime / 1_000_000_000 + " seconds");
+    }
 
     private Double getCalculatedPrice(Map<String, String> params) {
 
@@ -127,12 +137,7 @@ public class SmetaController {
 
 //        Resetting cells to default values
 
-        for (Map.Entry<String, com.lightswitch.ramdom.smeta.mappings.Cell> entry : this.mappings.mappings.cells.entrySet()) {
-            String id = entry.getValue().id;
-            String def = entry.getValue().def;
-
-            this.setCellValue(workbook, id, def);
-        }
+        this.setDefaultCellValues(workbook);
 
 //        Setting client provided values
         for (Map.Entry<String, String> entry : params.entrySet()) {
@@ -158,6 +163,15 @@ public class SmetaController {
 
         evaluator.clearAllCachedResultValues();
         return evaluator.evaluate(cell).getNumberValue();
+    }
+
+    private void setDefaultCellValues(XSSFWorkbook workbook) {
+        for (Map.Entry<String, com.lightswitch.ramdom.smeta.mappings.Cell> entry : this.mappings.mappings.cells.entrySet()) {
+            String id = entry.getValue().id;
+            String def = entry.getValue().def;
+
+            this.setCellValue(workbook, id, def);
+        }
     }
 
     // Getters
