@@ -2,7 +2,6 @@ package com.lightswitch.ramdom.smeta.controllers;
 
 import com.lightswitch.ramdom.smeta.Mappings;
 import com.lightswitch.ramdom.smeta.WorkbooksPool;
-import com.lightswitch.ramdom.smeta.protocol.Protocol;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.stream.Stream;
 
 @CrossOrigin(origins = "http://ramdom.test")
 @RestController
@@ -32,22 +32,6 @@ public class SmetaController {
 
         this.pool = new WorkbooksPool();
         this.pool.loadWorkbooks();
-    }
-
-    @GetMapping("/test")
-    public void test() {
-        Protocol.Command.Builder builder = Protocol.Command.newBuilder()
-                .setClient("js");
-
-        String[] values = new String[]{"1", "2", "3", "4"};
-        for (String value :
-                values) {
-            builder.putValues(value, "123123");
-        }
-
-        Protocol.Command command = builder.build();
-
-        System.out.println(command);
     }
 
     public void greet() {
@@ -76,6 +60,141 @@ public class SmetaController {
 
         return price;
 //        return this.getTestCellValue();
+    }
+
+    @GetMapping("/api/v1/get-docs")
+    @ResponseBody
+    public void getDocs(@RequestParam Map<String, String> params) {
+
+        XSSFWorkbook wb = this.getWorkbook();
+        FormulaEvaluator evaluator = wb.getCreationHelper().createFormulaEvaluator();
+
+        evaluator.clearAllCachedResultValues();
+//        evaluator.evaluateAll();
+
+
+        ////////////////////
+        // 9, 12, 13, 14
+        // First sheet
+
+        XSSFSheet sheet = wb.getSheetAt(9);
+
+        ArrayList<ArrayList<String>> result = this.evaluateAndGetSmetaCells(evaluator, sheet, 6, 872, 1);
+
+        Stream<ArrayList<String>> sheet1 = result.stream()
+                .filter(row -> {
+                    if (row.size() == 8) {
+                        double lastValue = Double.parseDouble(row.get(7));
+                        return (lastValue != 0.0) && (lastValue != 1.0);
+                    } else return row.size() == 3 || row.size() == 2;
+                });
+
+        sheet1.forEach(row -> {
+            if (row.size() != 8) {
+                System.out.println(row.get(0));
+            } else {
+                System.out.println(row);
+            }
+        });
+
+        System.out.println("-------------------------------");
+
+        ////////////////////
+        //  Second sheet
+
+        sheet = wb.getSheetAt(12);
+
+        result = this.evaluateAndGetSmetaCells(evaluator, sheet, 14, 2495, 2);
+
+        result.stream()
+                .filter(row -> {
+                    if (row.size() == 8) {
+                        return Double.parseDouble(row.get(6)) != 0.0;
+                    }
+                    return false;
+                })
+                .forEach(System.out::println);
+
+
+        System.out.println("-----------------------");
+
+        ////////////////////
+        // Third sheet
+
+        sheet = wb.getSheetAt(13);
+
+        result = this.evaluateAndGetSmetaCells(evaluator, sheet, 15, 2340, 1);
+
+        result.stream()
+                // TODO: 14.09.2021 Непонятно как парсить (спросить)
+//                .filter(row -> {
+//
+//                })
+                .forEach(System.out::println);
+
+
+        System.out.println("---------------------------");
+        ///////////////////////
+        // Last sheet
+
+        sheet = wb.getSheetAt(14);
+
+        result = this.evaluateAndGetSmetaCells(evaluator, sheet, 13, 2487, 1);
+
+        result.stream()
+                .filter(row -> {
+                    if (row.size() >= 5) {
+                        // TODO: 14.09.2021 Неправильная фильтрация, не все строки
+//                        return true;
+                        return Double.parseDouble(row.get(4)) != 0;
+                    }
+                    return false;
+                })
+                .forEach(System.out::println);
+
+    }
+
+    private ArrayList<ArrayList<String>> evaluateAndGetSmetaCells(FormulaEvaluator evaluator, XSSFSheet sheet, int startRow, int endRow, int namesCol) {
+
+        int counter = 0;
+        ArrayList<ArrayList<String>> result = new ArrayList<>();
+        for (Row row : sheet) {
+
+            counter++;
+
+            if (counter < startRow) continue;
+            if (counter > endRow) break;
+
+            ArrayList<String> values = new ArrayList<>();
+
+            int col = 1;
+            for (Cell cell : row) {
+
+                switch (cell.getCellType()) {
+
+                    case FORMULA:
+                        if (col == namesCol) {
+                            String evaluated = evaluator.evaluate(cell).getStringValue();
+                            values.add(evaluated);
+                        } else {
+                            double evaluated = evaluator.evaluate(cell).getNumberValue();
+                            values.add(Double.toString(evaluated));
+                        }
+                        break;
+
+                    case STRING:
+                        values.add(cell.getStringCellValue());
+                        break;
+                }
+
+                col++;
+
+            }
+
+            result.add(values);
+        }
+
+        return result;
     }
 
     @GetMapping("/validate-cells")

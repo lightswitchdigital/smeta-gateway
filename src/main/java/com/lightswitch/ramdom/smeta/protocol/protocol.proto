@@ -1,7 +1,0 @@
-syntax = "proto3";
-
-message Command {
-  map <string, string> values = 1;
-  string client = 2;
-  uint64 timestamp = 3;
-}
