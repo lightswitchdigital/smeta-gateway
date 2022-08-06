@@ -8,6 +8,8 @@
     <context:annotation-config/>
     <context:component-scan base-package="com.lightswitch.ramdom.smeta"/>
 
-    <bean id="mappings" class="com.lightswitch.ramdom.smeta.Mappings"/>
-    <bean id="workbooks" class="com.lightswitch.ramdom.smeta.WorkbooksPool"/>
+    <bean id="pool" class="com.lightswitch.ramdom.smeta.WorkbooksPool" scope="singleton"/>
+    <bean id="smetaMappings" class="com.lightswitch.ramdom.smeta.SmetaMappings" scope="singleton"/>
+    <bean id="pricelistMappings" class="com.lightswitch.ramdom.smeta.PricelistMappings" scope="singleton"/>
+    <bean id="pdfExporter" class="com.lightswitch.ramdom.smeta.PDFExporter" scope="singleton"/>
 </beans>

@@ -1,6 +1,4 @@
-package com.lightswitch.ramdom.smeta.mappings;
-
-import java.lang.reflect.Array;
+package com.lightswitch.ramdom.smeta.mappings.smeta;
 
 public class Cell {
     public String id;

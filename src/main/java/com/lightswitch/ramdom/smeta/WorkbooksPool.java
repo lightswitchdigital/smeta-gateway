@@ -3,13 +3,11 @@ package com.lightswitch.ramdom.smeta;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Repository;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Repository
 public class WorkbooksPool {
 
     Logger logger = LoggerFactory.getLogger(WorkbooksPool.class);
@@ -23,8 +21,9 @@ public class WorkbooksPool {
 
         this.pool = new ArrayList<>();
         this.program_path = "/src/program.xlsx";
-        this.workbooks_count = 2;
+        this.workbooks_count = 1;
 
+        this.loadWorkbooks();
     }
 
     public void loadWorkbooks() {

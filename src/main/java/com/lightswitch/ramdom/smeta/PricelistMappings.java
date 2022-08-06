@@ -3,25 +3,26 @@ package com.lightswitch.ramdom.smeta;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lightswitch.ramdom.smeta.mappings.Cell;
-import com.lightswitch.ramdom.smeta.mappings.Cells;
+import com.lightswitch.ramdom.smeta.mappings.pricelist.Cell;
+import com.lightswitch.ramdom.smeta.mappings.pricelist.Cells;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Repository;
 
 import java.io.File;
 import java.io.IOException;
 
-@Repository
-public class Mappings {
-
-    Logger logger = LoggerFactory.getLogger(Mappings.class);
+public class PricelistMappings {
 
     public Cells mappings;
+    Logger logger = LoggerFactory.getLogger(PricelistMappings.class);
+
+    public PricelistMappings() {
+        this.load();
+    }
 
     public void load() {
         ObjectMapper objectMapper = new ObjectMapper();
-        String jsonPath = System.getProperty("user.dir") + "/src/mappings.json";
+        String jsonPath = System.getProperty("user.dir") + "/src/pricelist.json";
         Cells mappings = null;
 
         try {
@@ -52,7 +53,6 @@ public class Mappings {
 
         this.logger.error("couldn't find cell id with name {}", cellName);
         return "AZ999";
-
     }
 
     public Cell getCell(String cellName) {

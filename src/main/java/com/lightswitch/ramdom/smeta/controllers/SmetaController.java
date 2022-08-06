@@ -1,6 +1,7 @@
 package com.lightswitch.ramdom.smeta.controllers;
 
-import com.lightswitch.ramdom.smeta.Mappings;
+import com.lightswitch.ramdom.smeta.PDFExporter;
+import com.lightswitch.ramdom.smeta.SmetaMappings;
 import com.lightswitch.ramdom.smeta.WorkbooksPool;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
@@ -13,9 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.stream.Stream;
 
 @CrossOrigin(origins = "http://ramdom.test")
 @RestController
@@ -24,14 +25,15 @@ public class SmetaController {
     Logger logger = LoggerFactory.getLogger(SmetaController.class);
 
     @Autowired
-    public Mappings mappings;
+    public SmetaMappings mappings;
+
+    @Autowired
     public WorkbooksPool pool;
+    @Autowired
+    public PDFExporter exporter;
 
     public SmetaController() {
         this.greet();
-
-        this.pool = new WorkbooksPool();
-        this.pool.loadWorkbooks();
     }
 
     public void greet() {
@@ -79,78 +81,88 @@ public class SmetaController {
 
         XSSFSheet sheet = wb.getSheetAt(9);
 
-        ArrayList<ArrayList<String>> result = this.evaluateAndGetSmetaCells(evaluator, sheet, 6, 872, 1);
+//        System.out.println(sheet.getSheetName());
+//        ArrayList<ArrayList<String>> result = this.evaluateAndGetSmetaCells(evaluator, sheet, 6, 872, 1);
+//
+//        Stream<ArrayList<String>> sheet1 = result.stream()
+//                .filter(row -> {
+//                    if (row.size() == 8) {
+//                        double lastValue = Double.parseDouble(row.get(7));
+//                        return (lastValue != 0.0) && (lastValue != 1.0);
+//                    } else return row.size() == 3 || row.size() == 2 || row.size() == 7;
+//                });
+//
+//        sheet1.forEach(row -> {
+//            if (row.size() != 8) {
+//                System.out.println(row);
+//            } else {
+//                System.out.println(row);
+//            }
+//        });
+//
+//        System.out.println("-------------------------------");
 
-        Stream<ArrayList<String>> sheet1 = result.stream()
-                .filter(row -> {
-                    if (row.size() == 8) {
-                        double lastValue = Double.parseDouble(row.get(7));
-                        return (lastValue != 0.0) && (lastValue != 1.0);
-                    } else return row.size() == 3 || row.size() == 2;
-                });
-
-        sheet1.forEach(row -> {
-            if (row.size() != 8) {
-                System.out.println(row.get(0));
-            } else {
-                System.out.println(row);
-            }
-        });
-
-        System.out.println("-------------------------------");
-
-        ////////////////////
-        //  Second sheet
+//        ////////////////////
+//        //  Second sheet
 
         sheet = wb.getSheetAt(12);
+        System.out.println(sheet.getSheetName());
 
-        result = this.evaluateAndGetSmetaCells(evaluator, sheet, 14, 2495, 2);
+        ArrayList<ArrayList<String>> result = this.evaluateAndGetSmetaCells(evaluator, sheet, 668, 707, 2);
 
-        result.stream()
-                .filter(row -> {
-                    if (row.size() == 8) {
-                        return Double.parseDouble(row.get(6)) != 0.0;
-                    }
-                    return false;
-                })
-                .forEach(System.out::println);
-
-
-        System.out.println("-----------------------");
-
-        ////////////////////
-        // Third sheet
-
-        sheet = wb.getSheetAt(13);
-
-        result = this.evaluateAndGetSmetaCells(evaluator, sheet, 15, 2340, 1);
-
-        result.stream()
-                // TODO: 14.09.2021 Непонятно как парсить (спросить)
-//                .filter(row -> {
-//
-//                })
-                .forEach(System.out::println);
-
-
-        System.out.println("---------------------------");
-        ///////////////////////
-        // Last sheet
-
-        sheet = wb.getSheetAt(14);
-
-        result = this.evaluateAndGetSmetaCells(evaluator, sheet, 13, 2487, 1);
-
-        result.stream()
-                .filter(row -> {
-                    if (row.size() >= 5) {
-                        // TODO: 14.09.2021 Неправильная фильтрация, не все строки
+        // Exporting to PDF
+        try {
+            this.exporter.test(result.stream()
+                    .filter(row -> {
+                        if (row.size() == 8) {
+//                        System.out.println(row);
+                            return Double.parseDouble(row.get(6)) != 0.0;
 //                        return true;
-                        return Double.parseDouble(row.get(4)) != 0;
-                    }
-                    return false;
-                })
-                .forEach(System.out::println);
+                        }
+                        return false;
+                    }));
+        } catch (IOException e) {
+            this.logger.error("could not create pdf file");
+        }
+
+//
+//        System.out.println("-----------------------");
+//
+//        ////////////////////
+//        // Third sheet
+//
+//        sheet = wb.getSheetAt(13);
+//        System.out.println(sheet.getSheetName());
+//
+//        result = this.evaluateAndGetSmetaCells(evaluator, sheet, 15, 2340, 1);
+//
+//        result.stream()
+//                // TODO: 14.09.2021 Непонятно как парсить (спросить)
+////                .filter(row -> {
+////
+////                })
+//                .forEach(System.out::println);
+//
+//
+//        System.out.println("---------------------------");
+//        ///////////////////////
+//        // Last sheet
+//
+//        sheet = wb.getSheetAt(14);
+//        System.out.println(sheet.getSheetName());
+//
+//        result = this.evaluateAndGetSmetaCells(evaluator, sheet, 13, 2487, 1);
+//
+//        result.stream()
+//                .filter(row -> {
+//                    if (row.size() >= 5) {
+//                        // TODO: 14.09.2021 Неправильная фильтрация, не все строки
+////                        return true;
+//                        return Double.parseDouble(row.get(4)) != 0;
+//                    }
+//                    return false;
+//                })
+//                .forEach(System.out::println);
 
     }
 
@@ -209,7 +221,7 @@ public class SmetaController {
 
         long startTime = System.nanoTime();
 
-        for (Map.Entry<String, com.lightswitch.ramdom.smeta.mappings.Cell> entry :
+        for (Map.Entry<String, com.lightswitch.ramdom.smeta.mappings.smeta.Cell> entry :
                 this.mappings.mappings.cells.entrySet()) {
 
             // We want to test every cell individually, so we set default
@@ -217,7 +229,7 @@ public class SmetaController {
 
             this.setDefaultCellValues(wb);
 
-            com.lightswitch.ramdom.smeta.mappings.Cell cell = entry.getValue();
+            com.lightswitch.ramdom.smeta.mappings.smeta.Cell cell = entry.getValue();
 
             this.setCellValue(wb, cell.id, cell.def);
             this.logger.info("Setting cell " + cell.id + " to value " + cell.def);
@@ -285,7 +297,7 @@ public class SmetaController {
     }
 
     private void setDefaultCellValues(XSSFWorkbook workbook) {
-        for (Map.Entry<String, com.lightswitch.ramdom.smeta.mappings.Cell> entry : this.mappings.mappings.cells.entrySet()) {
+        for (Map.Entry<String, com.lightswitch.ramdom.smeta.mappings.smeta.Cell> entry : this.mappings.mappings.cells.entrySet()) {
             String id = entry.getValue().id;
             String def = entry.getValue().def;
 
