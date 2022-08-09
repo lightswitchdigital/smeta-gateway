@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://ramdom.test")
+@CrossOrigin(origins = "http://185.225.35.159")
 @RestController
 public class SmetaController {
 

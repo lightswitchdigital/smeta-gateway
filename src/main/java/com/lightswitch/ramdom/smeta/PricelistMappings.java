@@ -15,7 +15,6 @@ public class PricelistMappings {
 
     public Cells mappings;
     Logger logger = LoggerFactory.getLogger(PricelistMappings.class);
-
     public PricelistMappings() {
         this.load();
     }
