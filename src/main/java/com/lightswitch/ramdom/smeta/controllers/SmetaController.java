@@ -109,19 +109,12 @@ public class SmetaController {
         sheet = wb.getSheetAt(12);
         System.out.println(sheet.getSheetName());
 
-        ArrayList<ArrayList<String>> result = this.evaluateAndGetSmetaCells(evaluator, sheet, 668, 707, 2);
+        ArrayList<ArrayList<String>> result = this.evaluateAndGetSmetaCells(evaluator, sheet, 11, 2346, 2);
 
         // Exporting to PDF
         try {
-            this.exporter.test(result.stream()
-                    .filter(row -> {
-                        if (row.size() == 8) {
-//                        System.out.println(row);
-                            return Double.parseDouble(row.get(6)) != 0.0;
-//                        return true;
-                        }
-                        return false;
-                    }));
+
+            this.exporter.smetaInternal(result.stream());
         } catch (IOException e) {
             this.logger.error("could not create pdf file");
         }
