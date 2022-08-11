@@ -109,7 +109,7 @@ public class SmetaController {
         sheet = wb.getSheetAt(12);
         System.out.println(sheet.getSheetName());
 
-        ArrayList<ArrayList<String>> result = this.evaluateAndGetSmetaCells(evaluator, sheet, 11, 2346, 2);
+        ArrayList<ArrayList<String>> result = this.evaluateAndGetSmetaCells(evaluator, sheet, 12, 2346, 2);
 
         // Exporting to PDF
         try {
