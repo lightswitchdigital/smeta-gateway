@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 
 @CrossOrigin(origins = "http://185.225.35.159")
 @RestController
@@ -68,95 +69,41 @@ public class SmetaController {
     @ResponseBody
     public void getDocs(@RequestParam Map<String, String> params) {
 
+        String path = params.get("path");
+        if (Objects.equals(path, "")) {
+            path = "/smeta/defaults";
+        }
+
         XSSFWorkbook wb = this.getWorkbook();
         FormulaEvaluator evaluator = wb.getCreationHelper().createFormulaEvaluator();
 
         evaluator.clearAllCachedResultValues();
-//        evaluator.evaluateAll();
 
+        //////////////
+        // Smeta Zak
 
-        ////////////////////
-        // 9, 12, 13, 14
-        // First sheet
+        XSSFSheet sheetZak = wb.getSheetAt(13);
+        System.out.println(sheetZak.getSheetName());
 
-        XSSFSheet sheet = wb.getSheetAt(9);
+        ArrayList<ArrayList<String>> smetaZak = this.evaluateAndGetSmetaCells(evaluator, sheetZak, 10, 2343, 1);
 
-//        System.out.println(sheet.getSheetName());
-//        ArrayList<ArrayList<String>> result = this.evaluateAndGetSmetaCells(evaluator, sheet, 6, 872, 1);
-//
-//        Stream<ArrayList<String>> sheet1 = result.stream()
-//                .filter(row -> {
-//                    if (row.size() == 8) {
-//                        double lastValue = Double.parseDouble(row.get(7));
-//                        return (lastValue != 0.0) && (lastValue != 1.0);
-//                    } else return row.size() == 3 || row.size() == 2 || row.size() == 7;
-//                });
-//
-//        sheet1.forEach(row -> {
-//            if (row.size() != 8) {
-//                System.out.println(row);
-//            } else {
-//                System.out.println(row);
-//            }
-//        });
-//
-//        System.out.println("-------------------------------");
-
-//        ////////////////////
-//        //  Second sheet
-
-
-        sheet = wb.getSheetAt(12);
-        System.out.println(sheet.getSheetName());
-
-        ArrayList<ArrayList<String>> result = this.evaluateAndGetSmetaCells(evaluator, sheet, 12, 2346, 2);
-
-        // Exporting to PDF
         try {
-
-            this.exporter.smetaInternal(result.stream());
+            this.exporter.smetaZak(path, evaluator, sheetZak, smetaZak);
         } catch (IOException e) {
             this.logger.error("could not create pdf file");
         }
 
-//
-//        System.out.println("-----------------------");
-//
-//        ////////////////////
-//        // Third sheet
-//
-//        sheet = wb.getSheetAt(13);
-//        System.out.println(sheet.getSheetName());
-//
-//        result = this.evaluateAndGetSmetaCells(evaluator, sheet, 15, 2340, 1);
-//
-//        result.stream()
-//                // TODO: 14.09.2021 Непонятно как парсить (спросить)
-////                .filter(row -> {
-////
-////                })
-//                .forEach(System.out::println);
-//
-//
-//        System.out.println("---------------------------");
-//        ///////////////////////
-//        // Last sheet
-//
-//        sheet = wb.getSheetAt(14);
-//        System.out.println(sheet.getSheetName());
-//
-//        result = this.evaluateAndGetSmetaCells(evaluator, sheet, 13, 2487, 1);
-//
-//        result.stream()
-//                .filter(row -> {
-//                    if (row.size() >= 5) {
-//                        // TODO: 14.09.2021 Неправильная фильтрация, не все строки
-////                        return true;
-//                        return Double.parseDouble(row.get(4)) != 0;
-//                    }
-//                    return false;
-//                })
-//                .forEach(System.out::println);
+        //////////////////
+        // Smeta Internal
+
+        XSSFSheet sheetInternal = wb.getSheetAt(12);
+
+        ArrayList<ArrayList<String>> smetaInternal = this.evaluateAndGetSmetaCells(evaluator, sheetInternal, 12, 2346, 2);
+        try {
+            this.exporter.smetaInternal(path, smetaInternal);
+        } catch (IOException e) {
+            this.logger.error("could not create pdf file");
+        }
 
     }
 
