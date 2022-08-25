@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
@@ -53,25 +54,25 @@ public class SmetaController {
 
     @GetMapping("/api/v1/calculate")
     @ResponseBody
-    public Double calculate(@RequestParam Map<String, String> params) {
+    public String calculate(@RequestParam Map<String, String> params) {
         for (var entry : params.entrySet()) {
             System.out.println(entry.getKey() + "/" + entry.getValue());
         }
         Double price = this.getCalculatedPrice(params);
 
+        DecimalFormat df = new DecimalFormat("0.00");
         System.out.println(price);
 
-        return price;
+        return df.format(price);
 //        return this.getTestCellValue();
     }
 
-    @GetMapping("/api/v1/get-docs")
+    @GetMapping("/api/v1/get-docs/{dir}")
     @ResponseBody
-    public void getDocs(@RequestParam Map<String, String> params) {
+    public void getDocs(@PathVariable String dir, @RequestParam Map<String, String> params) {
 
-        String path = params.get("path");
-        if (Objects.equals(path, "")) {
-            path = "/smeta/defaults";
+        if (Objects.equals(dir, "")) {
+            dir = "undefined";
         }
 
         XSSFWorkbook wb = this.getWorkbook();
@@ -79,16 +80,38 @@ public class SmetaController {
 
         evaluator.clearAllCachedResultValues();
 
+        // Выставляем блять дефолтные значения для ввода данных
+        this.setDefaultCellValues(wb);
+
+        // Проставляем нахуй данные блять
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+
+            String name = entry.getKey();
+
+            try {
+                double value = Double.parseDouble(entry.getValue());
+
+                Cell valueCell = this.getCell(wb, this.mappings.getCellID(name));
+                valueCell.setCellValue(value);
+
+            } catch (NumberFormatException e) {
+                String value = entry.getValue();
+
+                Cell valueCell = this.getCell(wb, this.mappings.getCellID(name));
+                valueCell.setCellValue(value);
+            }
+        }
+
         //////////////
         // Smeta Zak
 
         XSSFSheet sheetZak = wb.getSheetAt(13);
         System.out.println(sheetZak.getSheetName());
 
-        ArrayList<ArrayList<String>> smetaZak = this.evaluateAndGetSmetaCells(evaluator, sheetZak, 10, 2343, 1);
+        ArrayList<ArrayList<String>> smetaZak = this.evaluateAndGetSmetaCells(evaluator, sheetZak, 10, 2343);
 
         try {
-            this.exporter.smetaZak(path, evaluator, sheetZak, smetaZak);
+            this.exporter.smetaZak(dir, evaluator, sheetZak, smetaZak);
         } catch (IOException e) {
             this.logger.error("could not create pdf file");
         }
@@ -98,16 +121,18 @@ public class SmetaController {
 
         XSSFSheet sheetInternal = wb.getSheetAt(12);
 
-        ArrayList<ArrayList<String>> smetaInternal = this.evaluateAndGetSmetaCells(evaluator, sheetInternal, 12, 2346, 2);
+        ArrayList<ArrayList<String>> smetaInternal = this.evaluateAndGetSmetaCells(evaluator, sheetInternal, 12, 2496);
         try {
-            this.exporter.smetaInternal(path, smetaInternal);
+            this.exporter.smetaInternal(dir, evaluator, sheetInternal, smetaInternal);
         } catch (IOException e) {
             this.logger.error("could not create pdf file");
         }
 
     }
 
-    private ArrayList<ArrayList<String>> evaluateAndGetSmetaCells(FormulaEvaluator evaluator, XSSFSheet sheet, int startRow, int endRow, int namesCol) {
+    private ArrayList<ArrayList<String>> evaluateAndGetSmetaCells(FormulaEvaluator evaluator, XSSFSheet sheet, int startRow, int endRow) {
+
+        DecimalFormat df = new DecimalFormat("0.00");
 
         int counter = 0;
         ArrayList<ArrayList<String>> result = new ArrayList<>();
@@ -120,27 +145,28 @@ public class SmetaController {
 
             ArrayList<String> values = new ArrayList<>();
 
-            int col = 1;
             for (Cell cell : row) {
 
                 switch (cell.getCellType()) {
 
                     case FORMULA:
-                        if (col == namesCol) {
-                            String evaluated = evaluator.evaluate(cell).getStringValue();
-                            values.add(evaluated);
+                        String evaluated = evaluator.evaluate(cell).getStringValue();
+
+                        if (evaluated == null) {
+                            double num = evaluator.evaluate(cell).getNumberValue();
+
+                            values.add(df.format(num));
                         } else {
-                            double evaluated = evaluator.evaluate(cell).getNumberValue();
-                            values.add(Double.toString(evaluated));
+
+                            values.add(evaluated);
                         }
+
                         break;
 
                     case STRING:
                         values.add(cell.getStringCellValue());
                         break;
                 }
-
-                col++;
 
             }
 

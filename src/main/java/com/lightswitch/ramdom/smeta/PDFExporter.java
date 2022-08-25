@@ -30,7 +30,7 @@ public class PDFExporter {
     Logger logger = LoggerFactory.getLogger(WorkbooksPool.class);
     public static final boolean CLEAR_ZEROS = true;
 
-    public void smetaZak(String path, FormulaEvaluator evaluator, Sheet sheet, ArrayList<ArrayList<String>> rows) throws IOException {
+    public void smetaZak(String dir, FormulaEvaluator evaluator, Sheet sheet, ArrayList<ArrayList<String>> rows) throws IOException {
 
         // |----------------------------------------------
         // | 1 - Всякая хуйня + сабтайтлы материалы и работы
@@ -41,7 +41,7 @@ public class PDFExporter {
         DecimalFormat df = new DecimalFormat("0.00");
 
 //        PdfWriter writer = new PdfWriter(System.getProperty("user.dir") + "/smeta_zak.pdf");
-        PdfWriter writer = new PdfWriter(Paths.get(path + "smeta_zak.pdf").toString());
+        PdfWriter writer = new PdfWriter(Paths.get(System.getProperty("user.dir") + "/" + dir, "smeta_zak.pdf").toString());
 
         PdfDocument pdfDoc = new PdfDocument(writer);
         pdfDoc.setDefaultPageSize(PageSize.A4.rotate());
@@ -79,7 +79,7 @@ public class PDFExporter {
                 if (CLEAR_ZEROS) {
                     try {
                         double price = Double.parseDouble(row.get(3));
-                        if (price < 0.00001) {
+                        if (price < 10) {
                             return;
                         }
                     } catch (NumberFormatException e) {
@@ -123,7 +123,7 @@ public class PDFExporter {
 //                }
             }
 
-            toRemove.forEach(System.out::println);
+//            toRemove.forEach(System.out::println);
             toRemove.forEach(cleared::remove);
         }
 
@@ -215,21 +215,11 @@ public class PDFExporter {
     private Double getCellValue(FormulaEvaluator evaluator, Sheet sheet, String id) {
         Cell cell = this.getCell(sheet, id);
 
-        evaluator.clearAllCachedResultValues();
+//        evaluator.clearAllCachedResultValues();
         return evaluator.evaluate(cell).getNumberValue();
     }
 
-    public void smetaInternal(String path, ArrayList<ArrayList<String>> rows) throws IOException {
-
-//        rows.forEach(row -> {
-//            if (row.size() == 4) {
-//                System.out.println(row);
-//            }
-//        });
-//
-//        if (true) {
-//            return;
-//        }
+    public void smetaInternal(String dir, FormulaEvaluator evaluator, Sheet sheet, ArrayList<ArrayList<String>> rows) throws IOException {
 
         // |--------------------------------------------------
         // | 3 - Названия групп, в том числе материалы, работы
@@ -239,8 +229,7 @@ public class PDFExporter {
         // | 7 - Работы
         // | 8 - Материалы
 
-//        PdfWriter writer = new PdfWriter(System.getProperty("user.dir") + "/smeta_internal.pdf");
-        PdfWriter writer = new PdfWriter(Paths.get(path + "smeta_internal.pdf").toString());
+        PdfWriter writer = new PdfWriter(Paths.get(System.getProperty("user.dir") + "/" + dir, "smeta_internal.pdf").toString());
 
         PdfDocument pdfDoc = new PdfDocument(writer);
         pdfDoc.setDefaultPageSize(PageSize.A4.rotate());
@@ -253,15 +242,35 @@ public class PDFExporter {
         doc.add(new Paragraph("Сметный расчет (внутренний)").setFontSize(14).setBold().setTextAlignment(TextAlignment.CENTER));
         doc.add(new Paragraph("\n"));
 
+        DecimalFormat df = new DecimalFormat();
 
-        // First we clear out all priceless fuck
+        //////////////////////////
+        // Добавляем хэдеры блять
+        Table tableMeta = new Table(new float[]{150f, 100f});
+        tableMeta.addCell("Длина дома, м.п.").setBold().setTextAlignment(TextAlignment.RIGHT);
+        tableMeta.addCell(df.format(this.getCellValue(evaluator, sheet, "D2")));
+        tableMeta.addCell("Ширина дома, м.п.").setBold().setTextAlignment(TextAlignment.RIGHT);
+        tableMeta.addCell(df.format(this.getCellValue(evaluator, sheet, "D3")));
+        tableMeta.addCell("Этажность дома").setBold().setTextAlignment(TextAlignment.RIGHT);
+        tableMeta.addCell(df.format(this.getCellValue(evaluator, sheet, "D4")));
+        tableMeta.addCell("S строения общая, м2").setBold().setTextAlignment(TextAlignment.RIGHT);
+        tableMeta.addCell(df.format(this.getCellValue(evaluator, sheet, "D5")));
+        tableMeta.addCell("S строения чистая, м2").setBold().setTextAlignment(TextAlignment.RIGHT);
+        tableMeta.addCell(df.format(this.getCellValue(evaluator, sheet, "D6")));
+        doc.add(tableMeta);
+
+        doc.add(new Paragraph("\n"));
+
+        // Удаляем всю ебаную хуйню нулевую блять
         ArrayList<ArrayList<String>> cleared = new ArrayList<>();
         rows.forEach(row -> {
             if (row.size() == 7 || row.size() == 8) {
                 if (CLEAR_ZEROS) {
                     try {
                         double price = Double.parseDouble(row.get(6));
-                        if (price < 0.0001) {
+
+                        // Бля пацаны извините так получилось
+                        if (price < 10 || price == 2000) {
                             return;
                         }
 
@@ -326,28 +335,44 @@ public class PDFExporter {
                 if (row.get(0) == null) {
                     return;
                 }
-//
-                // If the first col is can be parsed into double, we emerge
-//                try {
-//                    Double.parseDouble(row.get(0));
-//                    logger.error("could not parse table row name: " + row.get(0));
-//                }catch (NumberFormatException e) {
-                float[] materialsColWidth = {50f, 20f, 20f, 20f, 20f, 20f, 20f, 20f};
-                if (state.get() == InternalSmetaStates.SUBTITLE || state.get() == InternalSmetaStates.TITLE) {
-                    Table t = new Table(materialsColWidth);
-//                        addTableHeaders8(t);
-                    bufTable.set(t);
-                }
 
-                row.forEach(bufTable.get()::addCell);
-                state.set(InternalSmetaStates.MATERIALS);
-//                }
+                // If the first col is can be parsed into double, we emerge
+                try {
+                    Double.parseDouble(row.get(0));
+                    logger.error("could not parse table row name: " + row.get(0));
+                } catch (NumberFormatException e) {
+                    float[] materialsColWidth = {50f, 20f, 20f, 20f, 20f, 20f, 20f, 20f};
+                    if (state.get() == InternalSmetaStates.SUBTITLE || state.get() == InternalSmetaStates.TITLE) {
+                        Table t = new Table(materialsColWidth);
+                        addTableHeaders8(t);
+                        bufTable.set(t);
+                    }
+
+                    row.forEach(bufTable.get()::addCell);
+                    state.set(InternalSmetaStates.MATERIALS);
+                }
             }
         });
 
         //////////////////
         // Adding footer
 
+        //////////////////////////
+        // Добавляем футер нахуй
+        Table tableMetaFooter = new Table(new float[]{150f, 100f});
+        tableMetaFooter.addCell("Всего материалов, рублей").setBold().setTextAlignment(TextAlignment.RIGHT);
+        tableMetaFooter.addCell(df.format(this.getCellValue(evaluator, sheet, "G2498")));
+        tableMetaFooter.addCell("Всего работы, рублей").setBold().setTextAlignment(TextAlignment.RIGHT);
+        tableMetaFooter.addCell(df.format(this.getCellValue(evaluator, sheet, "G2499")));
+        tableMetaFooter.addCell("Всего транспортные расходы, рублей").setBold().setTextAlignment(TextAlignment.RIGHT);
+        tableMetaFooter.addCell(df.format(this.getCellValue(evaluator, sheet, "G2500")));
+        tableMetaFooter.addCell("Всего дополнительные расходные материалы").setBold().setTextAlignment(TextAlignment.RIGHT);
+        tableMetaFooter.addCell(df.format(this.getCellValue(evaluator, sheet, "G2501")));
+        tableMetaFooter.addCell("Всего работ и материалов, рублей").setBold().setTextAlignment(TextAlignment.RIGHT);
+        tableMetaFooter.addCell(df.format(this.getCellValue(evaluator, sheet, "H2502")));
+        tableMetaFooter.addCell("Всего работ и материалов, рублей").setBold().setTextAlignment(TextAlignment.RIGHT);
+        tableMetaFooter.addCell(df.format(this.getCellValue(evaluator, sheet, "H2503")));
+        doc.add(tableMetaFooter);
 
         doc.close();
         writer.close();
@@ -362,14 +387,14 @@ public class PDFExporter {
 
 
     public void addTableHeaders8(Table table) {
-        table.addHeaderCell("Наименование работ и затрат").setBold();
-        table.addHeaderCell("ед. изм").setBold();
-        table.addHeaderCell("кол-во").setBold();
-        table.addHeaderCell("Цена ед.изм.").setBold();
-        table.addHeaderCell("Цена с накруткой").setBold();
-        table.addHeaderCell("Общая цена").setBold();
-        table.addHeaderCell("Цена по прайсу").setBold();
-        table.addHeaderCell("Для закупа материала").setBold();
+        table.addHeaderCell(new Paragraph("Наименование работ и затрат").setBold());
+        table.addHeaderCell(new Paragraph("ед. изм").setBold());
+        table.addHeaderCell(new Paragraph("кол-во").setBold());
+        table.addHeaderCell(new Paragraph("Цена ед.изм.").setBold());
+        table.addHeaderCell(new Paragraph("Цена с накруткой").setBold());
+        table.addHeaderCell(new Paragraph("Общая цена").setBold());
+        table.addHeaderCell(new Paragraph("Цена по прайсу").setBold());
+        table.addHeaderCell(new Paragraph("Для закупа материала").setBold());
     }
 
     public void addTableHeaders7(Table table) {
