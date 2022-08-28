@@ -248,15 +248,15 @@ public class PDFExporter {
         // Добавляем хэдеры блять
         Table tableMeta = new Table(new float[]{150f, 100f});
         tableMeta.addCell("Длина дома, м.п.").setBold().setTextAlignment(TextAlignment.RIGHT);
-        tableMeta.addCell(df.format(this.getCellValue(evaluator, sheet, "D2")));
+        tableMeta.addCell(df.format(this.getCellValue(evaluator, sheet, "H2")));
         tableMeta.addCell("Ширина дома, м.п.").setBold().setTextAlignment(TextAlignment.RIGHT);
-        tableMeta.addCell(df.format(this.getCellValue(evaluator, sheet, "D3")));
+        tableMeta.addCell(df.format(this.getCellValue(evaluator, sheet, "H3")));
         tableMeta.addCell("Этажность дома").setBold().setTextAlignment(TextAlignment.RIGHT);
-        tableMeta.addCell(df.format(this.getCellValue(evaluator, sheet, "D4")));
+        tableMeta.addCell(df.format(this.getCellValue(evaluator, sheet, "H4")));
         tableMeta.addCell("S строения общая, м2").setBold().setTextAlignment(TextAlignment.RIGHT);
-        tableMeta.addCell(df.format(this.getCellValue(evaluator, sheet, "D5")));
+        tableMeta.addCell(df.format(this.getCellValue(evaluator, sheet, "H5")));
         tableMeta.addCell("S строения чистая, м2").setBold().setTextAlignment(TextAlignment.RIGHT);
-        tableMeta.addCell(df.format(this.getCellValue(evaluator, sheet, "D6")));
+        tableMeta.addCell(df.format(this.getCellValue(evaluator, sheet, "H6")));
         doc.add(tableMeta);
 
         doc.add(new Paragraph("\n"));
@@ -264,8 +264,12 @@ public class PDFExporter {
         // Удаляем всю ебаную хуйню нулевую блять
         ArrayList<ArrayList<String>> cleared = new ArrayList<>();
         rows.forEach(row -> {
-            if (row.size() == 7 || row.size() == 8) {
-                if (CLEAR_ZEROS) {
+            if (CLEAR_ZEROS) {
+                if (row.size() != 3 && row.size() != 7 && row.size() != 8) {
+                    return;
+                }
+
+                if (row.size() == 7 || row.size() == 8) {
                     try {
                         double price = Double.parseDouble(row.get(6));
 
@@ -282,14 +286,63 @@ public class PDFExporter {
             cleared.add(row);
         });
 
+        // А теперь сука удаляем ненужные хедеры блять
+        ArrayList<ArrayList<String>> toDelete = new ArrayList<>();
+
+        for (int i = 0; i < cleared.size(); i++) {
+            ArrayList<String> row = cleared.get(i);
+
+            // Если это большой тайтл, то проверяем следующие 3
+            if (row.size() == 3) {
+
+                if (!Objects.equals(row.get(0), "Работы") && !Objects.equals(row.get(0), "Материалы") && !Objects.equals(row.get(0), "Техника и дополнительные расходы")) {
+
+                    if (Objects.equals(row.get(0), "Расходные материалы")) {
+                        toDelete.add(row);
+                        continue;
+                    }
+                    if (Objects.equals(row.get(0), "Командировочные расходы")) {
+                        toDelete.add(row);
+                        continue;
+                    }
+
+                    int headersSize = 0;
+                    ArrayList<String> currentRow;
+
+                    // Пытаемся найти блять другой тайтл в пределах 4 элементов
+                    for (int j = 1; j < 5; j++) {
+                        try {
+                            currentRow = cleared.get(i + j);
+                            if (currentRow.size() == 3
+                                    && !Objects.equals(currentRow.get(0), "Работы")
+                                    && !Objects.equals(currentRow.get(0), "Материалы")
+                                    && !Objects.equals(currentRow.get(0), "Техника и дополнительные расходы")
+                                    && !Objects.equals(currentRow.get(0), "Командировочные расходы")) {
+                                headersSize = j;
+                            }
+                        } catch (IndexOutOfBoundsException ignored) {
+
+                        }
+                    }
+
+                    if (headersSize > 0) {
+                        for (int j = 0; j < headersSize; j++) {
+                            ArrayList<String> rowToDelete = cleared.get(i + j);
+                            toDelete.add(rowToDelete);
+                        }
+
+                    }
+                }
+            }
+        }
+
+        toDelete.forEach(System.out::println);
+        cleared.removeAll(toDelete);
+
         AtomicReference<InternalSmetaStates> state = new AtomicReference<>(InternalSmetaStates.TITLE);
         AtomicReference<Table> bufTable = new AtomicReference<>(new Table(new float[]{50f, 20f, 20f, 20f, 20f, 20f, 20f}));
 
-//        AtomicInteger counter = new AtomicInteger();
-
         cleared.forEach(row -> {
-
-//            counter.getAndIncrement();
 
             if (row.size() == 3) {
                 // If the prev state was materials or works - we close buf table
@@ -361,15 +414,15 @@ public class PDFExporter {
         // Добавляем футер нахуй
         Table tableMetaFooter = new Table(new float[]{150f, 100f});
         tableMetaFooter.addCell("Всего материалов, рублей").setBold().setTextAlignment(TextAlignment.RIGHT);
-        tableMetaFooter.addCell(df.format(this.getCellValue(evaluator, sheet, "G2498")));
+        tableMetaFooter.addCell(df.format(this.getCellValue(evaluator, sheet, "H2498")));
         tableMetaFooter.addCell("Всего работы, рублей").setBold().setTextAlignment(TextAlignment.RIGHT);
-        tableMetaFooter.addCell(df.format(this.getCellValue(evaluator, sheet, "G2499")));
+        tableMetaFooter.addCell(df.format(this.getCellValue(evaluator, sheet, "H2499")));
         tableMetaFooter.addCell("Всего транспортные расходы, рублей").setBold().setTextAlignment(TextAlignment.RIGHT);
-        tableMetaFooter.addCell(df.format(this.getCellValue(evaluator, sheet, "G2500")));
+        tableMetaFooter.addCell(df.format(this.getCellValue(evaluator, sheet, "H2500")));
         tableMetaFooter.addCell("Всего дополнительные расходные материалы").setBold().setTextAlignment(TextAlignment.RIGHT);
-        tableMetaFooter.addCell(df.format(this.getCellValue(evaluator, sheet, "G2501")));
-        tableMetaFooter.addCell("Всего работ и материалов, рублей").setBold().setTextAlignment(TextAlignment.RIGHT);
-        tableMetaFooter.addCell(df.format(this.getCellValue(evaluator, sheet, "H2502")));
+        tableMetaFooter.addCell(df.format(this.getCellValue(evaluator, sheet, "H2501")));
+//        tableMetaFooter.addCell("Всего работ и материалов, рублей").setBold().setTextAlignment(TextAlignment.RIGHT);
+//        tableMetaFooter.addCell(df.format(this.getCellValue(evaluator, sheet, "H2502")));
         tableMetaFooter.addCell("Всего работ и материалов, рублей").setBold().setTextAlignment(TextAlignment.RIGHT);
         tableMetaFooter.addCell(df.format(this.getCellValue(evaluator, sheet, "H2503")));
         doc.add(tableMetaFooter);

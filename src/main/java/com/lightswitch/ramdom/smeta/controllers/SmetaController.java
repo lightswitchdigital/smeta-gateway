@@ -1,6 +1,7 @@
 package com.lightswitch.ramdom.smeta.controllers;
 
 import com.lightswitch.ramdom.smeta.PDFExporter;
+import com.lightswitch.ramdom.smeta.PricelistMappings;
 import com.lightswitch.ramdom.smeta.SmetaMappings;
 import com.lightswitch.ramdom.smeta.WorkbooksPool;
 import org.apache.poi.ss.usermodel.Cell;
@@ -28,6 +29,9 @@ public class SmetaController {
 
     @Autowired
     public SmetaMappings mappings;
+
+    @Autowired
+    public PricelistMappings pricelistMappings;
 
     @Autowired
     public WorkbooksPool pool;
@@ -272,6 +276,15 @@ public class SmetaController {
         }
     }
 
+    public void setDefaultPricelistValues(XSSFWorkbook workbook) {
+        for (Map.Entry<String, com.lightswitch.ramdom.smeta.mappings.pricelist.Cell> entry : this.pricelistMappings.mappings.cells.entrySet()) {
+            String id = entry.getValue().id;
+            String def = entry.getValue().def;
+
+            this.setCellValue(workbook, id, def);
+        }
+    }
+
     // Getters
 
     private XSSFWorkbook getWorkbook() {
@@ -281,6 +294,10 @@ public class SmetaController {
     private XSSFSheet getSheet(XSSFWorkbook workbook) {
         return workbook.getSheetAt(2);
     }
+
+//    private XSSFSheet getPricelistSheet(XSSFWorkbook workbook) {
+//        return workbook.getSheetAt();
+//    }
 
     private Cell getCell(XSSFWorkbook workbook, String cellName) {
 

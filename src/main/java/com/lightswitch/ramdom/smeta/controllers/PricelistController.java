@@ -2,7 +2,7 @@ package com.lightswitch.ramdom.smeta.controllers;
 
 import com.lightswitch.ramdom.smeta.PricelistMappings;
 import com.lightswitch.ramdom.smeta.WorkbooksPool;
-import com.lightswitch.ramdom.smeta.mappings.pricelist.Cell;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellReference;
@@ -30,15 +30,6 @@ public class PricelistController {
 
     public PricelistController() {
 
-    }
-
-    @GetMapping("/api/v1/testtest")
-    public void testtest() {
-        for (Map.Entry<String, Cell> entry :
-                this.mappings.mappings.cells.entrySet()) {
-            System.out.println(entry.getKey() + " : " + entry.getValue().def);
-        }
-        return;
     }
 
     @GetMapping("/api/v1/pricelist")
@@ -95,10 +86,8 @@ public class PricelistController {
             this.setCellValue(wb, cell.id, cell.def);
             this.logger.info("Setting cell " + cell.id + " to value " + cell.def);
 
-            org.apache.poi.ss.usermodel.Cell resultCell = this.getCell(wb, this.mappings.getCellID("result"));
-
-            evaluator.clearAllCachedResultValues();
-            double result = evaluator.evaluate(resultCell).getNumberValue();
+            double result = this.priceResult(wb, evaluator);
+            this.logger.info("Price is: " + result);
 
             if (result == 0.0) {
                 this.logger.error("Encountered malicious cell: " + cell.id);
@@ -122,6 +111,14 @@ public class PricelistController {
         this.logger.info("Test took " + totalTime / 1_000_000_000 + " seconds");
     }
 
+    public double priceResult(XSSFWorkbook wb, FormulaEvaluator evaluator) {
+        XSSFSheet smetaSheet = wb.getSheetAt(2);
+        CellReference cr = new CellReference("A2");
+        Row row = smetaSheet.getRow(cr.getRow());
+
+        Cell resultCell = row.getCell(cr.getCol());
+        return evaluator.evaluate(resultCell).getNumberValue();
+    }
 
     private void setDefaultCellValues(XSSFWorkbook workbook) {
         for (Map.Entry<String, com.lightswitch.ramdom.smeta.mappings.pricelist.Cell> entry : this.mappings.mappings.cells.entrySet()) {
