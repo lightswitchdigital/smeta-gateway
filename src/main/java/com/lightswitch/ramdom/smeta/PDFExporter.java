@@ -74,7 +74,6 @@ public class PDFExporter {
         ArrayList<ArrayList<String>> cleared = new ArrayList<>();
         rows.forEach(row -> {
             if (row.size() == 4) {
-
                 // Clear all zeroed rows
                 if (CLEAR_ZEROS) {
                     try {
@@ -86,46 +85,55 @@ public class PDFExporter {
                         return;
                     }
                 }
+            } else if (row.size() == 2) {
+                if (row.get(0).startsWith("Итого")) {
+                    return;
+                }
             }
             cleared.add(row);
         });
 
-        ////////////////////////////////
-        // Removing all excessive titles
+        // А теперь сука удаляем ненужные хедеры блять
+        ArrayList<ArrayList<String>> toDelete = new ArrayList<>();
 
-        if (CLEAR_ZEROS) {
-            ArrayList<ArrayList<String>> toRemove = new ArrayList<>();
-            ZakSmetaStates inState = ZakSmetaStates.TITLE;
-            for (int i = 0; i < cleared.size(); i++) {
-                ArrayList<String> row = cleared.get(i);
-                if (row.size() == 1 || row.size() == 2) {
-                    if (row.get(0).startsWith("Итого")) {
-                        inState = ZakSmetaStates.TOTAL;
-                    } else if (!Objects.equals(row.get(0), "Работы") && !Objects.equals(row.get(0), "Материалы")) {
-                        inState = ZakSmetaStates.TITLE;
-                    } else {
-                        inState = ZakSmetaStates.SUBTITLE;
+        for (int i = 0; i < cleared.size(); i++) {
+            ArrayList<String> row = cleared.get(i);
+
+            // Если это большой тайтл, то проверяем следующие 3
+            if (row.size() == 2 || row.size() == 1 || row.size() == 3) {
+
+                if (!Objects.equals(row.get(0), "Работы") && !Objects.equals(row.get(0), "Материалы") && !Objects.equals(row.get(0), "Техника и дополнительные расходы")) {
+
+                    int headersSize = 0;
+                    ArrayList<String> currentRow;
+
+                    // Пытаемся найти блять другой тайтл в пределах 4 элементов
+                    for (int j = 1; j < 4; j++) {
+                        try {
+                            currentRow = cleared.get(i + j);
+                            if ((currentRow.size() == 2 || currentRow.size() == 1 || currentRow.size() == 3)
+                                    && !Objects.equals(currentRow.get(0), "Работы")
+                                    && !Objects.equals(currentRow.get(0), "Материалы")) {
+                                headersSize = j;
+                            }
+                        } catch (IndexOutOfBoundsException ignored) {
+
+                        }
                     }
-                } else if (row.size() == 4) {
-                    inState = ZakSmetaStates.DATA;
+
+                    if (headersSize > 0) {
+                        for (int j = 0; j < headersSize; j++) {
+                            ArrayList<String> rowToDelete = cleared.get(i + j);
+                            toDelete.add(rowToDelete);
+                        }
+
+                    }
                 }
-
-                // Now we are checking if prev state was title or subtitle
-//                if (inState == ZakSmetaStates.TOTAL) {
-//                    if (cleared.get(i-1).size() == 2 && cleared.get(i-2).size() == 2) {
-//                        toRemove.add(row);
-//                        toRemove.add(cleared.get(i-1));
-//                        toRemove.add(cleared.get(i-2));
-//                    } else if (cleared.get(i - 1).size() == 2) {
-//                        toRemove.add(row);
-//                        toRemove.add(cleared.get(i-1));
-//                    }
-//                }
             }
-
-//            toRemove.forEach(System.out::println);
-            toRemove.forEach(cleared::remove);
         }
+
+        toDelete.forEach(System.out::println);
+        cleared.removeAll(toDelete);
 
         AtomicReference<ZakSmetaStates> state = new AtomicReference<>(ZakSmetaStates.TITLE);
         AtomicReference<Table> bufTable = new AtomicReference<>(new Table(new float[]{100f, 50f, 50f, 50f}));
@@ -139,13 +147,7 @@ public class PDFExporter {
                     doc.add(bufTable.get());
                 }
 
-                if (row.get(0).startsWith("Итого")) {
-                    state.set(ZakSmetaStates.TOTAL);
-                    Table totalTable = new Table(new float[]{150f, 100f});
-                    totalTable.addCell(row.get(0)).setBold();
-                    totalTable.addCell(row.get(1));
-                    doc.add(totalTable);
-                } else if (!Objects.equals(row.get(0), "Работы") && !Objects.equals(row.get(0), "Материалы")) {
+                if (!Objects.equals(row.get(0), "Работы") && !Objects.equals(row.get(0), "Материалы")) {
                     state.set(ZakSmetaStates.TITLE);
                     doc.add(new Paragraph("\n"));
                     doc.add(new Paragraph(row.get(0)).setFontSize(18).setBold());
@@ -197,8 +199,10 @@ public class PDFExporter {
         tableMetaFooter.addCell(df.format(this.getCellValue(evaluator, sheet, "F2350")));
         tableMetaFooter.addCell("Всего дополнительные расходные материалы").setBold().setTextAlignment(TextAlignment.RIGHT);
         tableMetaFooter.addCell(df.format(this.getCellValue(evaluator, sheet, "F2351")));
-        tableMetaFooter.addCell("Всего работ и материалов, рублей").setBold().setTextAlignment(TextAlignment.RIGHT);
+        tableMetaFooter.addCell("Всего, командировочные расходы, рублей").setBold().setTextAlignment(TextAlignment.RIGHT);
         tableMetaFooter.addCell(df.format(this.getCellValue(evaluator, sheet, "F2352")));
+        tableMetaFooter.addCell("Всего работ и материалов, рублей").setBold().setTextAlignment(TextAlignment.RIGHT);
+        tableMetaFooter.addCell(df.format(this.getCellValue(evaluator, sheet, "F2353")));
         doc.add(tableMetaFooter);
 
         doc.close();
@@ -336,7 +340,7 @@ public class PDFExporter {
             }
         }
 
-        toDelete.forEach(System.out::println);
+//        toDelete.forEach(System.out::println);
         cleared.removeAll(toDelete);
 
         AtomicReference<InternalSmetaStates> state = new AtomicReference<>(InternalSmetaStates.TITLE);
