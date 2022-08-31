@@ -96,41 +96,41 @@ public class PDFExporter {
         // А теперь сука удаляем ненужные хедеры блять
         ArrayList<ArrayList<String>> toDelete = new ArrayList<>();
 
-//        for (int i = 0; i < cleared.size(); i++) {
-//            ArrayList<String> row = cleared.get(i);
-//
-//            // Если это большой тайтл, то проверяем следующие 3
-//            if (row.size() == 2 || row.size() == 1 || row.size() == 3) {
-//
-//                if (!Objects.equals(row.get(0), "Работы") && !Objects.equals(row.get(0), "Материалы") && !Objects.equals(row.get(0), "Техника и дополнительные расходы")) {
-//
-//                    int headersSize = 0;
-//                    ArrayList<String> currentRow;
-//
-//                    // Пытаемся найти блять другой тайтл в пределах 4 элементов
-//                    for (int j = 1; j < 4; j++) {
-//                        try {
-//                            currentRow = cleared.get(i + j);
-//                            if ((currentRow.size() == 2 || currentRow.size() == 1 || currentRow.size() == 3)
-//                                    && !Objects.equals(currentRow.get(0), "Работы")
-//                                    && !Objects.equals(currentRow.get(0), "Материалы")) {
-//                                headersSize = j;
-//                            }
-//                        } catch (IndexOutOfBoundsException ignored) {
-//
-//                        }
-//                    }
-//
-//                    if (headersSize > 0) {
-//                        for (int j = 0; j < headersSize; j++) {
-//                            ArrayList<String> rowToDelete = cleared.get(i + j);
-//                            toDelete.add(rowToDelete);
-//                        }
-//
-//                    }
-//                }
-//            }
-//        }
+        for (int i = 0; i < cleared.size(); i++) {
+            ArrayList<String> row = cleared.get(i);
+
+            // Если это большой тайтл, то проверяем следующие 3
+            if (row.size() == 2 || row.size() == 1 || row.size() == 3) {
+
+                if (!Objects.equals(row.get(0), "Работы") && !Objects.equals(row.get(0), "Материалы") && !Objects.equals(row.get(0), "Техника и дополнительные расходы")) {
+
+                    int headersSize = 0;
+                    ArrayList<String> currentRow;
+
+                    // Пытаемся найти блять другой тайтл в пределах 4 элементов
+                    for (int j = 1; j < 4; j++) {
+                        try {
+                            currentRow = cleared.get(i + j);
+                            if ((currentRow.size() == 2 || currentRow.size() == 1 || currentRow.size() == 3)
+                                    && !Objects.equals(currentRow.get(0), "Работы")
+                                    && !Objects.equals(currentRow.get(0), "Материалы")) {
+                                headersSize = j;
+                            }
+                        } catch (IndexOutOfBoundsException ignored) {
+
+                        }
+                    }
+
+                    if (headersSize > 0) {
+                        for (int j = 0; j < headersSize; j++) {
+                            ArrayList<String> rowToDelete = cleared.get(i + j);
+                            toDelete.add(rowToDelete);
+                        }
+
+                    }
+                }
+            }
+        }
 
 //        toDelete.forEach(System.out::println);
         cleared.removeAll(toDelete);
