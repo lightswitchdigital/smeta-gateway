@@ -132,6 +132,19 @@ public class SmetaController {
             this.logger.error("could not create pdf file");
         }
 
+        //////////////////
+        // Smeta zak rassh
+
+        XSSFSheet sheetZakRassh = wb.getSheetAt(14);
+        System.out.println(sheetZakRassh.getSheetName());
+
+        ArrayList<ArrayList<String>> smetaZakRassh = this.evaluateAndGetSmetaCells(evaluator, sheetInternal, 12, 2488);
+        try {
+            this.exporter.smetaZakRassh(dir, evaluator, sheetZakRassh, smetaZakRassh);
+        } catch (IOException e) {
+            this.logger.error("could not create pdf file");
+        }
+
     }
 
     private ArrayList<ArrayList<String>> evaluateAndGetSmetaCells(FormulaEvaluator evaluator, XSSFSheet sheet, int startRow, int endRow) {
