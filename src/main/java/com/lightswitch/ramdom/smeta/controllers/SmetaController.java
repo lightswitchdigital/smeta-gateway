@@ -4,6 +4,7 @@ import com.lightswitch.ramdom.smeta.PDFExporter;
 import com.lightswitch.ramdom.smeta.PricelistMappings;
 import com.lightswitch.ramdom.smeta.SmetaMappings;
 import com.lightswitch.ramdom.smeta.WorkbooksPool;
+import com.lightswitch.ramdom.smeta.requests.GetDocsRequest;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
@@ -71,9 +72,9 @@ public class SmetaController {
 //        return this.getTestCellValue();
     }
 
-    @GetMapping("/api/v1/get-docs/{dir}")
+    @PostMapping("/api/v1/get-docs/{dir}")
     @ResponseBody
-    public void getDocs(@PathVariable String dir, @RequestParam Map<String, String> params) {
+    public void getDocs(@PathVariable String dir, @RequestBody GetDocsRequest request) {
 
         if (Objects.equals(dir, "")) {
             dir = "undefined";
@@ -84,12 +85,12 @@ public class SmetaController {
 
         evaluator.clearAllCachedResultValues();
 
-        // Выставляем блять дефолтные значения для ввода данных
+        // Выставляем блять дефолтные значения нахуй
         this.setDefaultCellValues(wb);
+        this.setDefaultPricelistValues(wb);
 
         // Проставляем нахуй данные блять
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-
+        for (Map.Entry<String, String> entry : request.data.entrySet()) {
             String name = entry.getKey();
 
             try {
@@ -102,6 +103,23 @@ public class SmetaController {
                 String value = entry.getValue();
 
                 Cell valueCell = this.getCell(wb, this.mappings.getCellID(name));
+                valueCell.setCellValue(value);
+            }
+        }
+
+        for (Map.Entry<String, String> entry: request.pricelist.entrySet()) {
+            String name = entry.getKey();
+
+            try {
+                double value = Double.parseDouble(entry.getValue());
+
+                Cell valueCell = this.getPricelistCell(wb, this.pricelistMappings.getCellID(name));
+                valueCell.setCellValue(value);
+
+            } catch (NumberFormatException e) {
+                String value = entry.getValue();
+
+                Cell valueCell = this.getPricelistCell(wb, this.pricelistMappings.getCellID(name));
                 valueCell.setCellValue(value);
             }
         }
@@ -294,7 +312,7 @@ public class SmetaController {
             String id = entry.getValue().id;
             String def = entry.getValue().def;
 
-            this.setCellValue(workbook, id, def);
+            this.setPricelistCellValue(workbook, id, def);
         }
     }
 
@@ -313,10 +331,18 @@ public class SmetaController {
 //    }
 
     private Cell getCell(XSSFWorkbook workbook, String cellName) {
-
         XSSFSheet sheet = this.getSheet(workbook);
 
         CellReference cr = new CellReference(cellName);
+        Row row = sheet.getRow(cr.getRow());
+
+        return row.getCell(cr.getCol());
+    }
+
+    private Cell getPricelistCell(XSSFWorkbook workbook, String cellname) {
+        XSSFSheet sheet = workbook.getSheetAt(1);
+
+        CellReference cr = new CellReference(cellname);
         Row row = sheet.getRow(cr.getRow());
 
         return row.getCell(cr.getCol());
@@ -334,6 +360,10 @@ public class SmetaController {
         Cell cell = this.getCell(workbook, cellName);
 
         cell.setCellValue(value);
+
+    }
+
+    private void setPricelistCellValue(XSSFWorkbook workbook, String cellName, String value) {
 
     }
 }
