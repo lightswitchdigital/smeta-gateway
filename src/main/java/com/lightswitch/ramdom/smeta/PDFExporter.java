@@ -30,7 +30,7 @@ public class PDFExporter {
     Logger logger = LoggerFactory.getLogger(WorkbooksPool.class);
     public static final boolean CLEAR_ZEROS = true;
 
-    public void smetaZak(String dir, FormulaEvaluator evaluator, Sheet sheet, ArrayList<ArrayList<String>> rows) throws IOException {
+    public void smetaZak(String path, FormulaEvaluator evaluator, Sheet sheet, ArrayList<ArrayList<String>> rows) throws IOException {
 
         // |----------------------------------------------
         // | 1 - Всякая хуйня + сабтайтлы материалы и работы
@@ -40,8 +40,8 @@ public class PDFExporter {
 
         DecimalFormat df = new DecimalFormat("0.00");
 
-//        PdfWriter writer = new PdfWriter(System.getProperty("user.dir") + "/smeta_zak.pdf");
-        PdfWriter writer = new PdfWriter(Paths.get(System.getProperty("user.dir") + "/" + dir, "smeta_zak.pdf").toString());
+//        PdfWriter writer = new PdfWriter(System.getProperty("user.path") + "/smeta_zak.pdf");
+        PdfWriter writer = new PdfWriter(Paths.get(path, "smeta_zak.pdf").toString());
 
         PdfDocument pdfDoc = new PdfDocument(writer);
         pdfDoc.setDefaultPageSize(PageSize.A4.rotate());
@@ -209,7 +209,7 @@ public class PDFExporter {
         writer.close();
     }
 
-    public void smetaZakRassh(String dir, FormulaEvaluator evaluator, Sheet sheet, ArrayList<ArrayList<String>> rows) throws IOException {
+    public void smetaZakRassh(String path, FormulaEvaluator evaluator, Sheet sheet, ArrayList<ArrayList<String>> rows) throws IOException {
 
         // |----------------------------------------------
         // | 1 - ничего
@@ -230,8 +230,8 @@ public class PDFExporter {
 
         DecimalFormat df = new DecimalFormat("0.00");
 
-//        PdfWriter writer = new PdfWriter(System.getProperty("user.dir") + "/smeta_zak.pdf");
-        PdfWriter writer = new PdfWriter(Paths.get(System.getProperty("user.dir") + "/" + dir, "smeta_zak_rassh.pdf").toString());
+//        PdfWriter writer = new PdfWriter(System.getProperty("user.path") + "/smeta_zak.pdf");
+        PdfWriter writer = new PdfWriter(Paths.get(path, "smeta_zak_rassh.pdf").toString());
 
         PdfDocument pdfDoc = new PdfDocument(writer);
         pdfDoc.setDefaultPageSize(PageSize.A4.rotate());
@@ -398,21 +398,7 @@ public class PDFExporter {
         writer.close();
     }
 
-    private Cell getCell(Sheet sheet, String id) {
-        CellReference cr = new CellReference(id);
-        Row row = sheet.getRow(cr.getRow());
-
-        return row.getCell(cr.getCol());
-    }
-
-    private Double getCellValue(FormulaEvaluator evaluator, Sheet sheet, String id) {
-        Cell cell = this.getCell(sheet, id);
-
-//        evaluator.clearAllCachedResultValues();
-        return evaluator.evaluate(cell).getNumberValue();
-    }
-
-    public void smetaInternal(String dir, FormulaEvaluator evaluator, Sheet sheet, ArrayList<ArrayList<String>> rows) throws IOException {
+    public void smetaInternal(String path, FormulaEvaluator evaluator, Sheet sheet, ArrayList<ArrayList<String>> rows) throws IOException {
 
         // |--------------------------------------------------
         // | 3 - Названия групп, в том числе материалы, работы
@@ -422,7 +408,7 @@ public class PDFExporter {
         // | 7 - Работы
         // | 8 - Материалы
 
-        PdfWriter writer = new PdfWriter(Paths.get(System.getProperty("user.dir") + "/" + dir, "smeta_internal.pdf").toString());
+        PdfWriter writer = new PdfWriter(Paths.get(path, "smeta_internal.pdf").toString());
 
         PdfDocument pdfDoc = new PdfDocument(writer);
         pdfDoc.setDefaultPageSize(PageSize.A4.rotate());
@@ -622,6 +608,21 @@ public class PDFExporter {
 
         doc.close();
         writer.close();
+    }
+
+
+    private Cell getCell(Sheet sheet, String id) {
+        CellReference cr = new CellReference(id);
+        Row row = sheet.getRow(cr.getRow());
+
+        return row.getCell(cr.getCol());
+    }
+
+    private Double getCellValue(FormulaEvaluator evaluator, Sheet sheet, String id) {
+        Cell cell = this.getCell(sheet, id);
+
+//        evaluator.clearAllCachedResultValues();
+        return evaluator.evaluate(cell).getNumberValue();
     }
 
     public void addTableHeaders4(Table table) {
