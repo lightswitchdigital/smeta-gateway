@@ -72,12 +72,12 @@ public class SmetaController {
 //        return this.getTestCellValue();
     }
 
-    @PostMapping("/api/v1/get-docs/{dir}")
+    @PostMapping("/api/v1/get-docs")
     @ResponseBody
-    public void getDocs(@PathVariable String dir, @RequestBody GetDocsRequest request) {
+    public void getDocs(@RequestBody GetDocsRequest request) {
 
-        if (Objects.equals(dir, "")) {
-            dir = "undefined";
+        if (Objects.equals(request.path, "")) {
+            return;
         }
 
         XSSFWorkbook wb = this.getWorkbook();
@@ -133,7 +133,7 @@ public class SmetaController {
         ArrayList<ArrayList<String>> smetaZak = this.evaluateAndGetSmetaCells(evaluator, sheetZak, 10, 2343);
 
         try {
-            this.exporter.smetaZak(dir, evaluator, sheetZak, smetaZak);
+            this.exporter.smetaZak(request.path, evaluator, sheetZak, smetaZak);
         } catch (IOException e) {
             this.logger.error("could not create pdf file");
         }
@@ -145,7 +145,7 @@ public class SmetaController {
 
         ArrayList<ArrayList<String>> smetaInternal = this.evaluateAndGetSmetaCells(evaluator, sheetInternal, 12, 2496);
         try {
-            this.exporter.smetaInternal(dir, evaluator, sheetInternal, smetaInternal);
+            this.exporter.smetaInternal(request.path, evaluator, sheetInternal, smetaInternal);
         } catch (IOException e) {
             this.logger.error("could not create pdf file");
         }
@@ -158,7 +158,7 @@ public class SmetaController {
 
         ArrayList<ArrayList<String>> smetaZakRassh = this.evaluateAndGetSmetaCells(evaluator, sheetInternal, 12, 2488);
         try {
-            this.exporter.smetaZakRassh(dir, evaluator, sheetZakRassh, smetaZakRassh);
+            this.exporter.smetaZakRassh(request.path, evaluator, sheetZakRassh, smetaZakRassh);
         } catch (IOException e) {
             this.logger.error("could not create pdf file");
         }
