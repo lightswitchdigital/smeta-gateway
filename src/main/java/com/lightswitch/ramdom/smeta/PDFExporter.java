@@ -187,6 +187,8 @@ public class PDFExporter {
             }
         });
 
+        doc.add(bufTable.get());
+        doc.add(new Paragraph("\n"));
 
         //////////////////////////
         // Adding footer information
@@ -285,8 +287,6 @@ public class PDFExporter {
             cleared.add(row);
         });
 
-        cleared.forEach(System.out::println);
-
         // А теперь сука удаляем ненужные хедеры блять
         ArrayList<ArrayList<String>> toDelete = new ArrayList<>();
 
@@ -376,6 +376,8 @@ public class PDFExporter {
             }
         });
 
+        doc.add(bufTable.get());
+        doc.add(new Paragraph("\n"));
 
         //////////////////////////
         // Adding footer information
@@ -471,7 +473,7 @@ public class PDFExporter {
         for (int i = 0; i < cleared.size(); i++) {
             ArrayList<String> row = cleared.get(i);
 
-            // Если это большой тайтл, то проверяем следующие 3
+            // Если это большой тайтл, то проверяем следующие 4
             if (row.size() == 3) {
 
                 if (!Objects.equals(row.get(0), "Работы") && !Objects.equals(row.get(0), "Материалы") && !Objects.equals(row.get(0), "Техника и дополнительные расходы")) {
@@ -488,7 +490,7 @@ public class PDFExporter {
                     int headersSize = 0;
                     ArrayList<String> currentRow;
 
-                    // Пытаемся найти блять другой тайтл в пределах 4 элементов
+                    // Пытаемся найти блять другой тайтл в пределах 3 элементов
                     for (int j = 1; j < 5; j++) {
                         try {
                             currentRow = cleared.get(i + j);
@@ -500,13 +502,17 @@ public class PDFExporter {
                                 headersSize = j;
                             }
                         } catch (IndexOutOfBoundsException ignored) {
-
+                            this.logger.warn("exception caught with #{} on row {}", j, row);
                         }
                     }
 
                     if (headersSize > 0) {
                         for (int j = 0; j < headersSize; j++) {
                             ArrayList<String> rowToDelete = cleared.get(i + j);
+                            if (rowToDelete.get(0).startsWith("Шлифовка стен")) {
+                                this.logger.warn("--------- CLEARING WRONG ROWS");
+                                this.logger.warn("{}", rowToDelete);
+                            }
                             toDelete.add(rowToDelete);
                         }
 
@@ -515,7 +521,8 @@ public class PDFExporter {
             }
         }
 
-//        toDelete.forEach(System.out::println);
+        toDelete.forEach(System.out::println);
+
         cleared.removeAll(toDelete);
 
         AtomicReference<InternalSmetaStates> state = new AtomicReference<>(InternalSmetaStates.TITLE);
@@ -585,6 +592,9 @@ public class PDFExporter {
                 }
             }
         });
+
+        // Добавляем незакрытую таблицу
+        doc.add(bufTable.get());
 
         //////////////////
         // Adding footer

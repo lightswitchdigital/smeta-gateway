@@ -135,7 +135,7 @@ public class SmetaController {
         try {
             this.exporter.smetaZak(request.path, evaluator, sheetZak, smetaZak);
         } catch (IOException e) {
-            this.logger.error("could not create pdf file");
+            this.logger.error("could not create pdf file: {}", e.getMessage());
         }
 
         //////////////////
@@ -143,11 +143,11 @@ public class SmetaController {
 
         XSSFSheet sheetInternal = wb.getSheetAt(12);
 
-        ArrayList<ArrayList<String>> smetaInternal = this.evaluateAndGetSmetaCells(evaluator, sheetInternal, 12, 2496);
+        ArrayList<ArrayList<String>> smetaInternal = this.evaluateAndGetSmetaCells(evaluator, sheetInternal, 12, 2495);
         try {
             this.exporter.smetaInternal(request.path, evaluator, sheetInternal, smetaInternal);
         } catch (IOException e) {
-            this.logger.error("could not create pdf file");
+            this.logger.error("could not create pdf file: {}", e.getMessage());
         }
 
         //////////////////
@@ -160,7 +160,7 @@ public class SmetaController {
         try {
             this.exporter.smetaZakRassh(request.path, evaluator, sheetZakRassh, smetaZakRassh);
         } catch (IOException e) {
-            this.logger.error("could not create pdf file");
+            this.logger.error("could not create pdf file: {}", e.getMessage());
         }
 
     }
