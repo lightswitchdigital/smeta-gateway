@@ -130,7 +130,7 @@ public class SmetaController {
         XSSFSheet sheetZak = wb.getSheetAt(13);
         System.out.println(sheetZak.getSheetName());
 
-        ArrayList<ArrayList<String>> smetaZak = this.evaluateAndGetSmetaCells(evaluator, sheetZak, 10, 2343);
+        ArrayList<ArrayList<String>> smetaZak = this.evaluateAndGetSmetaCells(evaluator, sheetZak, 10, 2340);
 
         try {
             this.exporter.smetaZak(request.path, evaluator, sheetZak, smetaZak);

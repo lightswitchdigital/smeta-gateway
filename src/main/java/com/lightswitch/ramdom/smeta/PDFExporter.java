@@ -38,6 +38,11 @@ public class PDFExporter {
         // | 3 - непонятно
         // | 4 - строки материалы и работы
 
+//        rows.stream().filter(row -> row.size() == 3).forEach(System.out::println);
+//        if (true) {
+//            return;
+//        }
+
         DecimalFormat df = new DecimalFormat("0.00");
 
 //        PdfWriter writer = new PdfWriter(System.getProperty("user.path") + "/smeta_zak.pdf");
@@ -140,7 +145,7 @@ public class PDFExporter {
 
         cleared.forEach(row -> {
 
-            if (row.size() == 2 || row.size() == 1) {
+            if (row.size() == 2 || row.size() == 1 || row.size() == 3) {
 
                 // If the prev state was materials or works - we close buf table
                 if (state.get() == ZakSmetaStates.DATA) {
@@ -187,8 +192,8 @@ public class PDFExporter {
             }
         });
 
-        doc.add(bufTable.get());
-        doc.add(new Paragraph("\n"));
+//        doc.add(bufTable.get());
+//        doc.add(new Paragraph("\n"));
 
         //////////////////////////
         // Adding footer information
@@ -376,8 +381,8 @@ public class PDFExporter {
             }
         });
 
-        doc.add(bufTable.get());
-        doc.add(new Paragraph("\n"));
+//        doc.add(bufTable.get());
+//        doc.add(new Paragraph("\n"));
 
         //////////////////////////
         // Adding footer information
@@ -521,7 +526,7 @@ public class PDFExporter {
             }
         }
 
-        toDelete.forEach(System.out::println);
+//        toDelete.forEach(System.out::println);
 
         cleared.removeAll(toDelete);
 
