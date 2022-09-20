@@ -530,6 +530,11 @@ public class PDFExporter {
 
         cleared.removeAll(toDelete);
 
+        // Умоляю простите
+        if (cleared.get(cleared.size() - 1).size() == 8 && cleared.get(cleared.size() - 2).size() == 7) {
+            cleared.remove(cleared.size() - 1);
+        }
+
         AtomicReference<InternalSmetaStates> state = new AtomicReference<>(InternalSmetaStates.TITLE);
         AtomicReference<Table> bufTable = new AtomicReference<>(new Table(new float[]{50f, 20f, 20f, 20f, 20f, 20f, 20f}));
 
@@ -600,6 +605,7 @@ public class PDFExporter {
 
         // Добавляем незакрытую таблицу
         doc.add(bufTable.get());
+        doc.add(new Paragraph("\n"));
 
         //////////////////
         // Adding footer
