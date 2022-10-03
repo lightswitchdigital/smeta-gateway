@@ -3,6 +3,7 @@ package com.lightswitch.ramdom.smeta;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -13,9 +14,11 @@ public class WorkbooksPool {
     Logger logger = LoggerFactory.getLogger(WorkbooksPool.class);
 
     private final List<XSSFWorkbook> pool;
-    private final String program_path;
 
-    private final Integer workbooks_count;
+    @Value("${smeta.program_path}")
+    private String program_path;
+    @Value("${smeta.instances}")
+    private Integer workbooks_count;
 
     public WorkbooksPool() {
 

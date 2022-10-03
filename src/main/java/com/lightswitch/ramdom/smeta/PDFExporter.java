@@ -1,12 +1,17 @@
 package com.lightswitch.ramdom.smeta;
 
 import com.itextpdf.io.font.PdfEncodings;
+import com.itextpdf.io.image.ImageData;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.color.Color;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.AreaBreak;
+import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
@@ -19,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -43,6 +49,7 @@ public class PDFExporter {
 //            return;
 //        }
 
+
         DecimalFormat df = new DecimalFormat("0.00");
 
 //        PdfWriter writer = new PdfWriter(System.getProperty("user.path") + "/smeta_zak.pdf");
@@ -54,10 +61,13 @@ public class PDFExporter {
         Document doc = new Document(pdfDoc);
 
         PdfFont font = PdfFontFactory.createFont(FONT, PdfEncodings.IDENTITY_H);
-
         doc.setFont(font);
-        doc.add(new Paragraph("Сметный расчет для зак укр").setFontSize(14).setBold().setTextAlignment(TextAlignment.CENTER));
-        doc.add(new Paragraph("\n"));
+
+        ImageData logoData = ImageDataFactory.create(Paths.get(System.getProperty("user.dir"), "/src/img/logo.png").toString());
+        Image logoImg = new Image(logoData);
+        logoImg.setWidth(75);
+
+        this.addHeaderPage(doc, "Сметный расчет для закупок", logoImg);
 
         //////////////////////////
         // Adding header information
@@ -73,8 +83,6 @@ public class PDFExporter {
         tableMeta.addCell("S строения чистая, м2").setBold().setTextAlignment(TextAlignment.RIGHT);
         tableMeta.addCell(df.format(this.getCellValue(evaluator, sheet, "F7")));
         doc.add(tableMeta);
-
-        doc.add(new Paragraph("\n"));
 
         ArrayList<ArrayList<String>> cleared = new ArrayList<>();
         rows.forEach(row -> {
@@ -194,6 +202,7 @@ public class PDFExporter {
 
 //        doc.add(bufTable.get());
 //        doc.add(new Paragraph("\n"));
+        doc.add(new AreaBreak());
 
         //////////////////////////
         // Adding footer information
@@ -211,6 +220,16 @@ public class PDFExporter {
         tableMetaFooter.addCell("Всего работ и материалов, рублей").setBold().setTextAlignment(TextAlignment.RIGHT);
         tableMetaFooter.addCell(df.format(this.getCellValue(evaluator, sheet, "F2353")));
         doc.add(tableMetaFooter);
+
+        doc.add(new Paragraph("\n"));
+        doc.add(new Paragraph("С перечнем работ и материалов, ознакомлен, с итоговой стоимостью согласен.").setBold());
+        doc.add(new Paragraph("\n"));
+        doc.add(new Paragraph("Подпись Заказчика ______________"));
+        doc.add(new Paragraph("\n"));
+        doc.add(new Paragraph("Подпись Подрядчика ______________"));
+        doc.add(new Paragraph("\n"));
+
+        doc.add(logoImg.setMarginLeft(30));
 
         doc.close();
         writer.close();
@@ -246,10 +265,13 @@ public class PDFExporter {
         Document doc = new Document(pdfDoc);
 
         PdfFont font = PdfFontFactory.createFont(FONT, PdfEncodings.IDENTITY_H);
-
         doc.setFont(font);
-        doc.add(new Paragraph("Сметный расчет для зак укр (расширенный)").setFontSize(14).setBold().setTextAlignment(TextAlignment.CENTER));
-        doc.add(new Paragraph("\n"));
+
+        ImageData logoData = ImageDataFactory.create(Paths.get(System.getProperty("user.dir"), "/src/img/logo.png").toString());
+        Image logoImg = new Image(logoData);
+        logoImg.setWidth(75);
+
+        this.addHeaderPage(doc, "Сметный расчет для закупок", logoImg);
 
         //////////////////////////
         // Adding header information
@@ -383,6 +405,7 @@ public class PDFExporter {
 
 //        doc.add(bufTable.get());
 //        doc.add(new Paragraph("\n"));
+        doc.add(new AreaBreak());
 
         //////////////////////////
         // Adding footer information
@@ -400,6 +423,16 @@ public class PDFExporter {
         tableMetaFooter.addCell("Всего работ и материалов, рублей").setBold().setTextAlignment(TextAlignment.RIGHT);
         tableMetaFooter.addCell(df.format(this.getCellValue(evaluator, sheet, "J2495")));
         doc.add(tableMetaFooter);
+
+        doc.add(new Paragraph("\n"));
+        doc.add(new Paragraph("С перечнем работ и материалов, ознакомлен, с итоговой стоимостью согласен.").setBold());
+        doc.add(new Paragraph("\n"));
+        doc.add(new Paragraph("Подпись Заказчика ______________"));
+        doc.add(new Paragraph("\n"));
+        doc.add(new Paragraph("Подпись Подрядчика ______________"));
+        doc.add(new Paragraph("\n"));
+
+        doc.add(logoImg.setMarginLeft(30));
 
         doc.close();
         writer.close();
@@ -423,10 +456,13 @@ public class PDFExporter {
         Document doc = new Document(pdfDoc);
 
         PdfFont font = PdfFontFactory.createFont(FONT, PdfEncodings.IDENTITY_H);
-
         doc.setFont(font);
-        doc.add(new Paragraph("Сметный расчет (внутренний)").setFontSize(14).setBold().setTextAlignment(TextAlignment.CENTER));
-        doc.add(new Paragraph("\n"));
+
+        ImageData logoData = ImageDataFactory.create(Paths.get(System.getProperty("user.dir"), "/src/img/logo.png").toString());
+        Image logoImg = new Image(logoData);
+        logoImg.setWidth(75);
+
+        this.addHeaderPage(doc, "Сметный расчет (внутренний)", logoImg);
 
         DecimalFormat df = new DecimalFormat();
 
@@ -605,7 +641,7 @@ public class PDFExporter {
 
         // Добавляем незакрытую таблицу
         doc.add(bufTable.get());
-        doc.add(new Paragraph("\n"));
+        doc.add(new AreaBreak());
 
         //////////////////
         // Adding footer
@@ -627,10 +663,30 @@ public class PDFExporter {
         tableMetaFooter.addCell(df.format(this.getCellValue(evaluator, sheet, "H2503")));
         doc.add(tableMetaFooter);
 
+        doc.add(new Paragraph("\n"));
+        doc.add(new Paragraph("С перечнем работ и материалов, ознакомлен, с итоговой стоимостью согласен.").setBold());
+        doc.add(new Paragraph("\n"));
+        doc.add(new Paragraph("Подпись Заказчика ______________"));
+        doc.add(new Paragraph("\n"));
+        doc.add(new Paragraph("Подпись Подрядчика ______________"));
+        doc.add(new Paragraph("\n"));
+
+        doc.add(logoImg.setMarginLeft(30));
+
         doc.close();
         writer.close();
     }
 
+    private void addHeaderPage(Document doc, String title, Image logo) throws MalformedURLException {
+        /// Вставляем лого нахуй блять
+        doc.add(logo);
+        doc.add(new Paragraph("\n"));
+        doc.add(new Paragraph("\n"));
+
+        doc.add(new Paragraph(title).setFontSize(18).setBold().setTextAlignment(TextAlignment.LEFT));
+        doc.add(new Paragraph("Документ подготовлен сайтом https://rbc.ramdom.ru").setFontSize(14).setFontColor(Color.GRAY));
+        doc.add(new AreaBreak());
+    }
 
     private Cell getCell(Sheet sheet, String id) {
         CellReference cr = new CellReference(id);
