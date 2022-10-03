@@ -4,6 +4,7 @@ import com.lightswitch.ramdom.smeta.PDFExporter;
 import com.lightswitch.ramdom.smeta.PricelistMappings;
 import com.lightswitch.ramdom.smeta.SmetaMappings;
 import com.lightswitch.ramdom.smeta.WorkbooksPool;
+import com.lightswitch.ramdom.smeta.requests.CalculateRequest;
 import com.lightswitch.ramdom.smeta.requests.GetDocsRequest;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 
-@CrossOrigin(origins = "http://185.225.35.159")
+@CrossOrigin(origins = "https://ramdom.rbc.work")
 @RestController
 public class SmetaController {
 
@@ -51,7 +52,6 @@ public class SmetaController {
                 "/_/ |_/_/  |_/_/  /_/_____/\\____/_/  /_/   \n" +
                 "                                           ");
         System.out.println("|---- HTTP service for smeta calculation");
-        System.out.println("|---- Use carefully");
         System.out.println("|---- Made and produced by LightSwitch");
         System.out.println("|---- https://lightswitch.digital");
         System.out.println(" ");
@@ -59,23 +59,21 @@ public class SmetaController {
 
     @GetMapping("/api/v1/calculate")
     @ResponseBody
-    public String calculate(@RequestParam Map<String, String> params) {
-        for (var entry : params.entrySet()) {
-            System.out.println(entry.getKey() + "/" + entry.getValue());
-        }
-        Double price = this.getCalculatedPrice(params);
+    public String calculate(@RequestBody CalculateRequest request) {
+//        for (var entry : request.data.entrySet()) {
+//            System.out.println(entry.getKey() + "/" + entry.getValue());
+//        }
+        Double price = this.getCalculatedPrice(request.data);
 
         DecimalFormat df = new DecimalFormat("0.00");
         System.out.println(price);
 
         return df.format(price);
-//        return this.getTestCellValue();
     }
 
     @PostMapping("/api/v1/get-docs")
     @ResponseBody
     public void getDocs(@RequestBody GetDocsRequest request) {
-
         if (Objects.equals(request.path, "")) {
             return;
         }
