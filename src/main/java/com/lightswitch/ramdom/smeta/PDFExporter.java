@@ -4,6 +4,7 @@ import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.color.Color;
+import com.itextpdf.kernel.color.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.geom.PageSize;
@@ -35,6 +36,8 @@ public class PDFExporter {
     public static final String FONT = System.getProperty("user.dir") + "/src/fonts/calibri.ttf";
     Logger logger = LoggerFactory.getLogger(WorkbooksPool.class);
     public static final boolean CLEAR_ZEROS = true;
+
+    private static final DeviceRgb GRAY_COLOR = new DeviceRgb(50, 50, 50);
 
     public void smetaZak(String path, FormulaEvaluator evaluator, Sheet sheet, ArrayList<ArrayList<String>> rows) throws IOException {
 
@@ -171,7 +174,7 @@ public class PDFExporter {
 
                 // Works and materials
             } else if (row.size() == 4) {
-//
+
                 // Checking for validity
                 if (row.get(0) == null) {
                     return;
@@ -184,14 +187,14 @@ public class PDFExporter {
                     addTableHeaders4(t);
                     bufTable.set(t);
                 }
-                bufTable.get().addCell(row.get(0));
-                bufTable.get().addCell(row.get(1));
+                bufTable.get().addCell(new Paragraph(row.get(0)).setFontColor(GRAY_COLOR));
+                bufTable.get().addCell(new Paragraph(row.get(1)).setFontColor(GRAY_COLOR));
                 try {
                     double price1 = Double.parseDouble(row.get(2));
                     double price2 = Double.parseDouble(row.get(3));
 
-                    bufTable.get().addCell(df.format(price1));
-                    bufTable.get().addCell(df.format(price2));
+                    bufTable.get().addCell(new Paragraph(df.format(price1)).setFontColor(GRAY_COLOR));
+                    bufTable.get().addCell(new Paragraph(df.format(price2)).setFontColor(GRAY_COLOR));
                 } catch (NumberFormatException ee) {
                     return;
                 }
@@ -200,8 +203,6 @@ public class PDFExporter {
             }
         });
 
-//        doc.add(bufTable.get());
-//        doc.add(new Paragraph("\n"));
         doc.add(new AreaBreak());
 
         //////////////////////////
@@ -393,11 +394,11 @@ public class PDFExporter {
                     addTableHeaders5(t);
                     bufTable.set(t);
                 }
-                bufTable.get().addCell(row.get(0));
-                bufTable.get().addCell(row.get(1));
-                bufTable.get().addCell(row.get(2));
-                bufTable.get().addCell(row.get(3));
-                bufTable.get().addCell(row.get(5));
+                bufTable.get().addCell(new Paragraph(row.get(0)).setFontColor(GRAY_COLOR));
+                bufTable.get().addCell(new Paragraph(row.get(1)).setFontColor(GRAY_COLOR));
+                bufTable.get().addCell(new Paragraph(row.get(2)).setFontColor(GRAY_COLOR));
+                bufTable.get().addCell(new Paragraph(row.get(3)).setFontColor(GRAY_COLOR));
+                bufTable.get().addCell(new Paragraph(row.get(5)).setFontColor(GRAY_COLOR));
 
                 state.set(ZakSmetaStates.DATA);
             }
@@ -601,19 +602,12 @@ public class PDFExporter {
                     addTableHeaders7(t);
                     bufTable.set(t);
                 }
-                bufTable.get().addCell(row.get(0));
-                bufTable.get().addCell(row.get(1));
-                bufTable.get().addCell(row.get(2));
-                bufTable.get().addCell(row.get(3));
-                bufTable.get().addCell(row.get(4));
-                bufTable.get().addCell(row.get(5));
-                bufTable.get().addCell(row.get(6));
-//                row.forEach(bufTable.get()::addCell);
+
+                row.forEach(val -> bufTable.get().addCell(new Paragraph(val).setFontColor(GRAY_COLOR)));
 
                 state.set(InternalSmetaStates.WORKS);
 
                 // Materials
-//            }
             } else if (row.size() == 8) {
 //
 //                // Checking for validity
@@ -633,7 +627,7 @@ public class PDFExporter {
                         bufTable.set(t);
                     }
 
-                    row.forEach(bufTable.get()::addCell);
+                    row.forEach(val -> bufTable.get().addCell(new Paragraph(val).setFontColor(GRAY_COLOR)));
                     state.set(InternalSmetaStates.MATERIALS);
                 }
             }
@@ -642,9 +636,6 @@ public class PDFExporter {
         // Добавляем незакрытую таблицу
         doc.add(bufTable.get());
         doc.add(new AreaBreak());
-
-        //////////////////
-        // Adding footer
 
         //////////////////////////
         // Добавляем футер нахуй
