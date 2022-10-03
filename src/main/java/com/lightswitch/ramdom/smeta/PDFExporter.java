@@ -47,15 +47,9 @@ public class PDFExporter {
         // | 3 - непонятно
         // | 4 - строки материалы и работы
 
-//        rows.stream().filter(row -> row.size() == 3).forEach(System.out::println);
-//        if (true) {
-//            return;
-//        }
-
 
         DecimalFormat df = new DecimalFormat("0.00");
 
-//        PdfWriter writer = new PdfWriter(System.getProperty("user.path") + "/smeta_zak.pdf");
         PdfWriter writer = new PdfWriter(Paths.get(path, "smeta_zak.pdf").toString());
 
         PdfDocument pdfDoc = new PdfDocument(writer);
@@ -91,15 +85,13 @@ public class PDFExporter {
         rows.forEach(row -> {
             if (row.size() == 4) {
                 // Clear all zeroed rows
-                if (CLEAR_ZEROS) {
-                    try {
-                        double price = Double.parseDouble(row.get(3));
-                        if (price < 10) {
-                            return;
-                        }
-                    } catch (NumberFormatException e) {
+                try {
+                    double price = Double.parseDouble(row.get(3));
+                    if (price < 10) {
                         return;
                     }
+                } catch (NumberFormatException e) {
+                    return;
                 }
             } else if (row.size() == 2) {
                 if (row.get(0).startsWith("Итого")) {
@@ -123,6 +115,8 @@ public class PDFExporter {
                     int headersSize = 0;
                     ArrayList<String> currentRow;
 
+                    boolean safeToDelete = true;
+
                     // Пытаемся найти блять другой тайтл в пределах 4 элементов
                     for (int j = 1; j < 4; j++) {
                         try {
@@ -131,25 +125,30 @@ public class PDFExporter {
                                     && !Objects.equals(currentRow.get(0), "Работы")
                                     && !Objects.equals(currentRow.get(0), "Материалы")) {
                                 headersSize = j;
+                            } else if (currentRow.size() == 4) {
+                                safeToDelete = false;
                             }
                         } catch (IndexOutOfBoundsException ignored) {
 
                         }
                     }
 
-                    if (headersSize > 0) {
+                    if (headersSize > 0 && safeToDelete) {
                         for (int j = 0; j < headersSize; j++) {
                             ArrayList<String> rowToDelete = cleared.get(i + j);
                             toDelete.add(rowToDelete);
                         }
-
                     }
                 }
             }
         }
 
-//        toDelete.forEach(System.out::println);
         cleared.removeAll(toDelete);
+
+        // Если последний элемент это тайтл - то удаляем нахуй
+        if (cleared.get(cleared.size() - 1).size() == 2 || cleared.get(cleared.size() - 1).size() == 3) {
+            cleared.remove(cleared.size() - 1);
+        }
 
         AtomicReference<ZakSmetaStates> state = new AtomicReference<>(ZakSmetaStates.TITLE);
         AtomicReference<Table> bufTable = new AtomicReference<>(new Table(new float[]{100f, 50f, 50f, 50f}));
@@ -187,6 +186,7 @@ public class PDFExporter {
                     addTableHeaders4(t);
                     bufTable.set(t);
                 }
+                // TODO: возможно добавление лишних клеток
                 bufTable.get().addCell(new Paragraph(row.get(0)).setFontColor(GRAY_COLOR));
                 bufTable.get().addCell(new Paragraph(row.get(1)).setFontColor(GRAY_COLOR));
                 try {
@@ -203,6 +203,7 @@ public class PDFExporter {
             }
         });
 
+        doc.add(bufTable.get());
         doc.add(new AreaBreak());
 
         //////////////////////////
@@ -247,17 +248,8 @@ public class PDFExporter {
         // | 6 - Непонятно
         // | 7, 8 - Данные
 
-//        rows.stream().filter(row -> {
-//            return row.size() == 8;
-//        }).forEach(System.out::println);
-//
-//        if (true) {
-//            return;
-//        }
-
         DecimalFormat df = new DecimalFormat("0.00");
 
-//        PdfWriter writer = new PdfWriter(System.getProperty("user.path") + "/smeta_zak.pdf");
         PdfWriter writer = new PdfWriter(Paths.get(path, "smeta_zak_rassh.pdf").toString());
 
         PdfDocument pdfDoc = new PdfDocument(writer);
@@ -301,19 +293,18 @@ public class PDFExporter {
             }
             if (row.size() == 7 || row.size() == 8) {
                 // Clear all zeroed rows
-                if (CLEAR_ZEROS) {
-                    try {
-                        double price = Double.parseDouble(row.get(5));
-                        if (price < 10) {
-                            return;
-                        }
-                    } catch (NumberFormatException e) {
+                try {
+                    double price = Double.parseDouble(row.get(5));
+                    if (price < 1) {
                         return;
                     }
+                } catch (NumberFormatException e) {
+                    return;
                 }
             }
             cleared.add(row);
         });
+
 
         // А теперь сука удаляем ненужные хедеры блять
         ArrayList<ArrayList<String>> toDelete = new ArrayList<>();
@@ -329,6 +320,8 @@ public class PDFExporter {
                     int headersSize = 0;
                     ArrayList<String> currentRow;
 
+                    boolean safeToDelete = true;
+
                     // Пытаемся найти блять другой тайтл в пределах 4 элементов
                     for (int j = 1; j < 4; j++) {
                         try {
@@ -337,25 +330,30 @@ public class PDFExporter {
                                     && !Objects.equals(currentRow.get(0), "Работы")
                                     && !Objects.equals(currentRow.get(0), "Материалы")) {
                                 headersSize = j;
+                                break;
+                            } else if (currentRow.size() == 7 || currentRow.size() == 8) {
+                                safeToDelete = false;
                             }
                         } catch (IndexOutOfBoundsException ignored) {
 
                         }
                     }
 
-                    if (headersSize > 0) {
+                    if (headersSize > 0 && safeToDelete) {
                         for (int j = 0; j < headersSize; j++) {
                             ArrayList<String> rowToDelete = cleared.get(i + j);
                             toDelete.add(rowToDelete);
                         }
-
                     }
                 }
             }
         }
-
-//        toDelete.forEach(System.out::println);
         cleared.removeAll(toDelete);
+
+        // Если последний элемент это тайтл - то удаляем нахуй
+        if (cleared.get(cleared.size() - 1).size() == 2 || cleared.get(cleared.size() - 1).size() == 3) {
+            cleared.remove(cleared.size() - 1);
+        }
 
         AtomicReference<ZakSmetaStates> state = new AtomicReference<>(ZakSmetaStates.TITLE);
         AtomicReference<Table> bufTable = new AtomicReference<>(new Table(new float[]{100f, 50f, 50f, 50f, 50f}));
@@ -404,8 +402,7 @@ public class PDFExporter {
             }
         });
 
-//        doc.add(bufTable.get());
-//        doc.add(new Paragraph("\n"));
+        doc.add(bufTable.get());
         doc.add(new AreaBreak());
 
         //////////////////////////
@@ -520,17 +517,10 @@ public class PDFExporter {
 
                 if (!Objects.equals(row.get(0), "Работы") && !Objects.equals(row.get(0), "Материалы") && !Objects.equals(row.get(0), "Техника и дополнительные расходы")) {
 
-                    if (Objects.equals(row.get(0), "Расходные материалы")) {
-                        toDelete.add(row);
-                        continue;
-                    }
-                    if (Objects.equals(row.get(0), "Командировочные расходы")) {
-                        toDelete.add(row);
-                        continue;
-                    }
-
                     int headersSize = 0;
                     ArrayList<String> currentRow;
+
+                    boolean safeToDelete = true;
 
                     // Пытаемся найти блять другой тайтл в пределах 3 элементов
                     for (int j = 1; j < 5; j++) {
@@ -542,33 +532,26 @@ public class PDFExporter {
                                     && !Objects.equals(currentRow.get(0), "Техника и дополнительные расходы")
                                     && !Objects.equals(currentRow.get(0), "Командировочные расходы")) {
                                 headersSize = j;
+                            } else if (currentRow.size() == 7 || currentRow.size() == 8) {
+                                safeToDelete = false;
                             }
                         } catch (IndexOutOfBoundsException ignored) {
-                            this.logger.warn("exception caught with #{} on row {}", j, row);
+
                         }
                     }
 
-                    if (headersSize > 0) {
+                    if (headersSize > 0 && safeToDelete) {
                         for (int j = 0; j < headersSize; j++) {
                             ArrayList<String> rowToDelete = cleared.get(i + j);
-                            if (rowToDelete.get(0).startsWith("Шлифовка стен")) {
-                                this.logger.warn("--------- CLEARING WRONG ROWS");
-                                this.logger.warn("{}", rowToDelete);
-                            }
                             toDelete.add(rowToDelete);
                         }
-
                     }
                 }
             }
         }
 
-//        toDelete.forEach(System.out::println);
-
         cleared.removeAll(toDelete);
-
-        // Умоляю простите
-        if (cleared.get(cleared.size() - 1).size() == 8 && cleared.get(cleared.size() - 2).size() == 7) {
+        if (cleared.get(cleared.size() - 1).size() == 2 || cleared.get(cleared.size() - 1).size() == 3) {
             cleared.remove(cleared.size() - 1);
         }
 
@@ -609,8 +592,8 @@ public class PDFExporter {
 
                 // Materials
             } else if (row.size() == 8) {
-//
-//                // Checking for validity
+
+                // Checking for validity
                 if (row.get(0) == null) {
                     return;
                 }
