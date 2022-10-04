@@ -24,7 +24,7 @@ public class WorkbooksPool {
 
         this.pool = new ArrayList<>();
         this.program_path = "/src/program.xlsx";
-        this.workbooks_count = 1;
+        this.workbooks_count = 2;
 
         this.loadWorkbooks();
     }

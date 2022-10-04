@@ -658,7 +658,7 @@ public class PDFExporter {
         doc.add(new Paragraph("\n"));
 
         doc.add(new Paragraph(title).setFontSize(18).setBold().setTextAlignment(TextAlignment.LEFT));
-        doc.add(new Paragraph("Документ подготовлен сайтом https://rbc.ramdom.ru").setFontSize(14).setFontColor(Color.GRAY));
+        doc.add(new Paragraph("Документ подготовлен сайтом https://rbc.ramdom.work").setFontSize(14).setFontColor(Color.GRAY));
         doc.add(new AreaBreak());
     }
 
