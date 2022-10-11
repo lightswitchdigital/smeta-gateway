@@ -221,13 +221,13 @@ public class SmetaController {
 
         long startTime = System.nanoTime();
 
+        this.setDefaultCellValues(wb);
+
         for (Map.Entry<String, com.lightswitch.ramdom.smeta.mappings.smeta.Cell> entry :
                 this.mappings.mappings.cells.entrySet()) {
 
             // We want to test every cell individually, so we set default
             // values for other cells
-
-            this.setDefaultCellValues(wb);
 
             com.lightswitch.ramdom.smeta.mappings.smeta.Cell cell = entry.getValue();
 
@@ -238,10 +238,12 @@ public class SmetaController {
 
             evaluator.clearAllCachedResultValues();
             double result = evaluator.evaluate(resultCell).getNumberValue();
+            this.logger.info("Price is: " + result);
 
             if (result == 0.0) {
                 this.logger.error("Encountered malicious cell: " + cell.id);
                 maliciousCells.add(cell.id);
+                this.setDefaultCellValues(wb);
             }
         }
 

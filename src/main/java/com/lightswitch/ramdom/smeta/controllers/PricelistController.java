@@ -73,13 +73,12 @@ public class PricelistController {
 
         long startTime = System.nanoTime();
 
+        // We want to test every cell individually, so we set default
+        // values for other cells
+        this.setDefaultCellValues(wb);
+
         for (Map.Entry<String, com.lightswitch.ramdom.smeta.mappings.pricelist.Cell> entry :
                 this.mappings.mappings.cells.entrySet()) {
-
-            // We want to test every cell individually, so we set default
-            // values for other cells
-
-            this.setDefaultCellValues(wb);
 
             com.lightswitch.ramdom.smeta.mappings.pricelist.Cell cell = entry.getValue();
 
@@ -92,6 +91,7 @@ public class PricelistController {
             if (result == 0.0) {
                 this.logger.error("Encountered malicious cell: " + cell.id);
                 maliciousCells.add(cell.id);
+                this.setDefaultCellValues(wb);
             }
         }
 
