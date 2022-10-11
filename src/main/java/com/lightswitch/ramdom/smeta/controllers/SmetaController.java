@@ -66,7 +66,7 @@ public class SmetaController {
         Double price = this.getCalculatedPrice(request.data);
 
         DecimalFormat df = new DecimalFormat("0.00");
-        System.out.println(price);
+//        System.out.println(price);
 
         return df.format(price);
     }
@@ -126,7 +126,7 @@ public class SmetaController {
         // Smeta Zak
 
         XSSFSheet sheetZak = wb.getSheetAt(13);
-        System.out.println(sheetZak.getSheetName());
+//        System.out.println(sheetZak.getSheetName());
 
         ArrayList<ArrayList<String>> smetaZak = this.evaluateAndGetSmetaCells(evaluator, sheetZak, 10, 2340);
 
@@ -152,7 +152,7 @@ public class SmetaController {
         // Smeta zak rassh
 
         XSSFSheet sheetZakRassh = wb.getSheetAt(14);
-        System.out.println(sheetZakRassh.getSheetName());
+//        System.out.println(sheetZakRassh.getSheetName());
 
         ArrayList<ArrayList<String>> smetaZakRassh = this.evaluateAndGetSmetaCells(evaluator, sheetInternal, 12, 2488);
         try {
