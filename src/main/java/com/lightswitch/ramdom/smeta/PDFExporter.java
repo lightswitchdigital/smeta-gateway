@@ -151,7 +151,7 @@ public class PDFExporter {
         }
 
         AtomicReference<ZakSmetaStates> state = new AtomicReference<>(ZakSmetaStates.TITLE);
-        AtomicReference<Table> bufTable = new AtomicReference<>(new Table(new float[]{100f, 50f, 50f, 50f}));
+        AtomicReference<Table> bufTable = new AtomicReference<>(new Table(new float[]{250f, 50f, 120f, 120f}));
 
         cleared.forEach(row -> {
 
@@ -179,7 +179,7 @@ public class PDFExporter {
                     return;
                 }
 
-                float[] cols = {100f, 50f, 50f, 50f};
+                float[] cols = {250f, 50f, 120f, 120f};
 
                 if (state.get() == ZakSmetaStates.TITLE || state.get() == ZakSmetaStates.SUBTITLE) {
                     Table t = new Table(cols);
@@ -356,7 +356,7 @@ public class PDFExporter {
         }
 
         AtomicReference<ZakSmetaStates> state = new AtomicReference<>(ZakSmetaStates.TITLE);
-        AtomicReference<Table> bufTable = new AtomicReference<>(new Table(new float[]{100f, 50f, 50f, 50f, 50f}));
+        AtomicReference<Table> bufTable = new AtomicReference<>(new Table(new float[]{200f, 50f, 100f, 100f, 100f}));
         addTableHeaders5(bufTable.get());
 
         cleared.forEach(row -> {
@@ -385,10 +385,11 @@ public class PDFExporter {
                     return;
                 }
 
-                float[] cols = {100f, 50f, 50f, 50f, 50f};
+                float[] cols = {200f, 50f, 100f, 100f, 100f};
 
                 if (state.get() == ZakSmetaStates.TITLE || state.get() == ZakSmetaStates.SUBTITLE) {
                     Table t = new Table(cols);
+                    t.setWidth(500);
                     addTableHeaders5(t);
                     bufTable.set(t);
                 }
@@ -556,7 +557,7 @@ public class PDFExporter {
         }
 
         AtomicReference<InternalSmetaStates> state = new AtomicReference<>(InternalSmetaStates.TITLE);
-        AtomicReference<Table> bufTable = new AtomicReference<>(new Table(new float[]{50f, 20f, 20f, 20f, 20f, 20f, 20f}));
+        AtomicReference<Table> bufTable = new AtomicReference<>(new Table(new float[]{150f, 20f, 20f, 20f, 20f, 20f, 20f}));
 
         cleared.forEach(row -> {
 
@@ -578,7 +579,7 @@ public class PDFExporter {
                 // Works
             }else if(row.size() == 7) {
 
-                float[] worksColWidth = {50f, 20f, 20f, 20f, 20f, 20f, 20f};
+                float[] worksColWidth = {200f, 20f, 20f, 20f, 20f, 20f, 20f};
 
                 if (state.get() == InternalSmetaStates.SUBTITLE || state.get() == InternalSmetaStates.TITLE) {
                     Table t = new Table(worksColWidth);
@@ -603,7 +604,7 @@ public class PDFExporter {
                     Double.parseDouble(row.get(0));
                     logger.error("could not parse table row name: " + row.get(0));
                 } catch (NumberFormatException e) {
-                    float[] materialsColWidth = {50f, 20f, 20f, 20f, 20f, 20f, 20f, 20f};
+                    float[] materialsColWidth = {200f, 20f, 20f, 20f, 20f, 20f, 20f, 20f};
                     if (state.get() == InternalSmetaStates.SUBTITLE || state.get() == InternalSmetaStates.TITLE) {
                         Table t = new Table(materialsColWidth);
                         addTableHeaders8(t);
