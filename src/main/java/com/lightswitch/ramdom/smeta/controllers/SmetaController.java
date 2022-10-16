@@ -131,7 +131,7 @@ public class SmetaController {
         ArrayList<ArrayList<String>> smetaZak = this.evaluateAndGetSmetaCells(evaluator, sheetZak, 10, 2340);
 
         try {
-            this.exporter.smetaZak(request.path, evaluator, sheetZak, smetaZak);
+            this.exporter.smetaZak(request.projectName, request.path, evaluator, sheetZak, smetaZak);
         } catch (IOException e) {
             this.logger.error("could not create pdf file: {}", e.getMessage());
         }
@@ -143,7 +143,7 @@ public class SmetaController {
 
         ArrayList<ArrayList<String>> smetaInternal = this.evaluateAndGetSmetaCells(evaluator, sheetInternal, 12, 2495);
         try {
-            this.exporter.smetaInternal(request.path, evaluator, sheetInternal, smetaInternal);
+            this.exporter.smetaInternal(request.projectName, request.path, evaluator, sheetInternal, smetaInternal);
         } catch (IOException e) {
             this.logger.error("could not create pdf file: {}", e.getMessage());
         }
@@ -156,7 +156,7 @@ public class SmetaController {
 
         ArrayList<ArrayList<String>> smetaZakRassh = this.evaluateAndGetSmetaCells(evaluator, sheetInternal, 12, 2488);
         try {
-            this.exporter.smetaZakRassh(request.path, evaluator, sheetZakRassh, smetaZakRassh);
+            this.exporter.smetaZakRassh(request.projectName, request.path, evaluator, sheetZakRassh, smetaZakRassh);
         } catch (IOException e) {
             this.logger.error("could not create pdf file: {}", e.getMessage());
         }

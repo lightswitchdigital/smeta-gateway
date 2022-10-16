@@ -3,7 +3,6 @@ package com.lightswitch.ramdom.smeta;
 import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
-import com.itextpdf.kernel.color.Color;
 import com.itextpdf.kernel.color.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
@@ -11,7 +10,7 @@ import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.AreaBreak;
+import com.itextpdf.layout.border.Border;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
@@ -28,6 +27,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
@@ -39,7 +40,7 @@ public class PDFExporter {
 
     private static final DeviceRgb GRAY_COLOR = new DeviceRgb(50, 50, 50);
 
-    public void smetaZak(String path, FormulaEvaluator evaluator, Sheet sheet, ArrayList<ArrayList<String>> rows) throws IOException {
+    public void smetaZak(String projectName, String path, FormulaEvaluator evaluator, Sheet sheet, ArrayList<ArrayList<String>> rows) throws IOException {
 
         // |----------------------------------------------
         // | 1 - Всякая хуйня + сабтайтлы материалы и работы
@@ -53,7 +54,7 @@ public class PDFExporter {
         PdfWriter writer = new PdfWriter(Paths.get(path, "smeta_zak.pdf").toString());
 
         PdfDocument pdfDoc = new PdfDocument(writer);
-        pdfDoc.setDefaultPageSize(PageSize.A4.rotate());
+        pdfDoc.setDefaultPageSize(PageSize.A4);
 
         Document doc = new Document(pdfDoc);
 
@@ -64,7 +65,7 @@ public class PDFExporter {
         Image logoImg = new Image(logoData);
         logoImg.setWidth(75);
 
-        this.addHeaderPage(doc, "Сметный расчет для закупок", logoImg);
+        this.addHeaderPage(doc, "Сметный расчет для закупок", projectName, logoImg);
 
         //////////////////////////
         // Adding header information
@@ -151,7 +152,7 @@ public class PDFExporter {
         }
 
         AtomicReference<ZakSmetaStates> state = new AtomicReference<>(ZakSmetaStates.TITLE);
-        AtomicReference<Table> bufTable = new AtomicReference<>(new Table(new float[]{250f, 50f, 120f, 120f}));
+        AtomicReference<Table> bufTable = new AtomicReference<>(new Table(new float[]{200f, 50f, 100f, 100f}));
 
         cleared.forEach(row -> {
 
@@ -165,7 +166,7 @@ public class PDFExporter {
                 if (!Objects.equals(row.get(0), "Работы") && !Objects.equals(row.get(0), "Материалы")) {
                     state.set(ZakSmetaStates.TITLE);
                     doc.add(new Paragraph("\n"));
-                    doc.add(new Paragraph(row.get(0)).setFontSize(18).setBold());
+                    doc.add(new Paragraph(row.get(0)).setFontSize(16).setBold());
                 } else {
                     state.set(ZakSmetaStates.SUBTITLE);
                     doc.add(new Paragraph(row.get(0)).setFontSize(14).setBold());
@@ -179,7 +180,7 @@ public class PDFExporter {
                     return;
                 }
 
-                float[] cols = {250f, 50f, 120f, 120f};
+                float[] cols = {200f, 50f, 100f, 100f};
 
                 if (state.get() == ZakSmetaStates.TITLE || state.get() == ZakSmetaStates.SUBTITLE) {
                     Table t = new Table(cols);
@@ -187,14 +188,14 @@ public class PDFExporter {
                     bufTable.set(t);
                 }
                 // TODO: возможно добавление лишних клеток
-                bufTable.get().addCell(new Paragraph(row.get(0)).setFontColor(GRAY_COLOR));
-                bufTable.get().addCell(new Paragraph(row.get(1)).setFontColor(GRAY_COLOR));
+                bufTable.get().addCell(new Paragraph(row.get(0)).setFontColor(GRAY_COLOR).setFontSize(12));
+                bufTable.get().addCell(new Paragraph(row.get(1)).setFontColor(GRAY_COLOR).setFontSize(12));
                 try {
                     double price1 = Double.parseDouble(row.get(2));
                     double price2 = Double.parseDouble(row.get(3));
 
-                    bufTable.get().addCell(new Paragraph(df.format(price1)).setFontColor(GRAY_COLOR));
-                    bufTable.get().addCell(new Paragraph(df.format(price2)).setFontColor(GRAY_COLOR));
+                    bufTable.get().addCell(new Paragraph(df.format(price1)).setFontColor(GRAY_COLOR).setFontSize(12));
+                    bufTable.get().addCell(new Paragraph(df.format(price2)).setFontColor(GRAY_COLOR).setFontSize(12));
                 } catch (NumberFormatException ee) {
                     return;
                 }
@@ -204,7 +205,8 @@ public class PDFExporter {
         });
 
         doc.add(bufTable.get());
-        doc.add(new AreaBreak());
+        doc.add(new Paragraph("\n"));
+        doc.add(new Paragraph("\n"));
 
         //////////////////////////
         // Adding footer information
@@ -225,10 +227,19 @@ public class PDFExporter {
 
         doc.add(new Paragraph("\n"));
         doc.add(new Paragraph("С перечнем работ и материалов, ознакомлен, с итоговой стоимостью согласен.").setBold());
-        doc.add(new Paragraph("\n"));
-        doc.add(new Paragraph("Подпись Заказчика ______________"));
-        doc.add(new Paragraph("\n"));
-        doc.add(new Paragraph("Подпись Подрядчика ______________"));
+        Table footerTable = new Table(new float[]{250, 250});
+        footerTable.setBorderLeft(Border.NO_BORDER);
+        footerTable.setBorderRight(Border.NO_BORDER);
+        footerTable.setBorderBottom(Border.NO_BORDER);
+
+        footerTable.setPaddingTop(50);
+        footerTable.setPaddingBottom(50);
+
+        footerTable.addHeaderCell(new Paragraph("Подрядчик").setBold().setFontSize(14));
+        footerTable.addHeaderCell(new Paragraph("Заказчик").setBold().setFontSize(14));
+        footerTable.addCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("Подпись ______________")).setPaddingTop(40).setBorder(Border.NO_BORDER));
+        footerTable.addCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("Подпись ______________")).setPaddingTop(40).setBorder(Border.NO_BORDER));
+        doc.add(footerTable);
         doc.add(new Paragraph("\n"));
 
         doc.add(logoImg.setMarginLeft(30));
@@ -237,7 +248,7 @@ public class PDFExporter {
         writer.close();
     }
 
-    public void smetaZakRassh(String path, FormulaEvaluator evaluator, Sheet sheet, ArrayList<ArrayList<String>> rows) throws IOException {
+    public void smetaZakRassh(String projectName, String path, FormulaEvaluator evaluator, Sheet sheet, ArrayList<ArrayList<String>> rows) throws IOException {
 
         // |----------------------------------------------
         // | 1 - ничего
@@ -253,7 +264,7 @@ public class PDFExporter {
         PdfWriter writer = new PdfWriter(Paths.get(path, "smeta_zak_rassh.pdf").toString());
 
         PdfDocument pdfDoc = new PdfDocument(writer);
-        pdfDoc.setDefaultPageSize(PageSize.A4.rotate());
+        pdfDoc.setDefaultPageSize(PageSize.A4);
 
         Document doc = new Document(pdfDoc);
 
@@ -264,7 +275,7 @@ public class PDFExporter {
         Image logoImg = new Image(logoData);
         logoImg.setWidth(75);
 
-        this.addHeaderPage(doc, "Сметный расчет для закупок", logoImg);
+        this.addHeaderPage(doc, "Сметный расчет для закупок", projectName, logoImg);
 
         //////////////////////////
         // Adding header information
@@ -356,7 +367,7 @@ public class PDFExporter {
         }
 
         AtomicReference<ZakSmetaStates> state = new AtomicReference<>(ZakSmetaStates.TITLE);
-        AtomicReference<Table> bufTable = new AtomicReference<>(new Table(new float[]{200f, 50f, 100f, 100f, 100f}));
+        AtomicReference<Table> bufTable = new AtomicReference<>(new Table(new float[]{200f, 50f, 100f, 100f, 100f}).setWidth(500));
         addTableHeaders5(bufTable.get());
 
         cleared.forEach(row -> {
@@ -371,7 +382,7 @@ public class PDFExporter {
                 if (!Objects.equals(row.get(0), "Работы") && !Objects.equals(row.get(0), "Материалы")) {
                     state.set(ZakSmetaStates.TITLE);
                     doc.add(new Paragraph("\n"));
-                    doc.add(new Paragraph(row.get(0)).setFontSize(18).setBold());
+                    doc.add(new Paragraph(row.get(0)).setFontSize(16).setBold());
                 } else {
                     state.set(ZakSmetaStates.SUBTITLE);
                     doc.add(new Paragraph(row.get(0)).setFontSize(14).setBold());
@@ -393,22 +404,22 @@ public class PDFExporter {
                     addTableHeaders5(t);
                     bufTable.set(t);
                 }
-                bufTable.get().addCell(new Paragraph(row.get(0)).setFontColor(GRAY_COLOR));
-                bufTable.get().addCell(new Paragraph(row.get(1)).setFontColor(GRAY_COLOR));
-                bufTable.get().addCell(new Paragraph(row.get(2)).setFontColor(GRAY_COLOR));
-                bufTable.get().addCell(new Paragraph(row.get(3)).setFontColor(GRAY_COLOR));
-                bufTable.get().addCell(new Paragraph(row.get(5)).setFontColor(GRAY_COLOR));
+                bufTable.get().addCell(new Paragraph(row.get(0)).setFontColor(GRAY_COLOR).setFontSize(12));
+                bufTable.get().addCell(new Paragraph(row.get(1)).setFontColor(GRAY_COLOR).setFontSize(12));
+                bufTable.get().addCell(new Paragraph(row.get(2)).setFontColor(GRAY_COLOR).setFontSize(12));
+                bufTable.get().addCell(new Paragraph(row.get(3)).setFontColor(GRAY_COLOR).setFontSize(12));
+                bufTable.get().addCell(new Paragraph(row.get(5)).setFontColor(GRAY_COLOR).setFontSize(12));
 
                 state.set(ZakSmetaStates.DATA);
             }
         });
 
         doc.add(bufTable.get());
-        doc.add(new AreaBreak());
+        doc.add(new Paragraph("\n"));
 
         //////////////////////////
         // Adding footer information
-        Table tableMetaFooter = new Table(new float[]{150f, 100f});
+        Table tableMetaFooter = new Table(new float[]{150, 100f});
         tableMetaFooter.addCell("Всего материалов, рублей").setBold().setTextAlignment(TextAlignment.RIGHT);
         tableMetaFooter.addCell(df.format(this.getCellValue(evaluator, sheet, "J2490")));
         tableMetaFooter.addCell("Всего работы, рублей").setBold().setTextAlignment(TextAlignment.RIGHT);
@@ -425,10 +436,19 @@ public class PDFExporter {
 
         doc.add(new Paragraph("\n"));
         doc.add(new Paragraph("С перечнем работ и материалов, ознакомлен, с итоговой стоимостью согласен.").setBold());
-        doc.add(new Paragraph("\n"));
-        doc.add(new Paragraph("Подпись Заказчика ______________"));
-        doc.add(new Paragraph("\n"));
-        doc.add(new Paragraph("Подпись Подрядчика ______________"));
+        Table footerTable = new Table(new float[]{250, 250});
+        footerTable.setBorderLeft(Border.NO_BORDER);
+        footerTable.setBorderRight(Border.NO_BORDER);
+        footerTable.setBorderBottom(Border.NO_BORDER);
+
+        footerTable.setPaddingTop(50);
+        footerTable.setPaddingBottom(50);
+
+        footerTable.addHeaderCell(new Paragraph("Подрядчик").setBold().setFontSize(14));
+        footerTable.addHeaderCell(new Paragraph("Заказчик").setBold().setFontSize(14));
+        footerTable.addCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("Подпись ______________")).setPaddingTop(40).setBorder(Border.NO_BORDER));
+        footerTable.addCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("Подпись ______________")).setPaddingTop(40).setBorder(Border.NO_BORDER));
+        doc.add(footerTable);
         doc.add(new Paragraph("\n"));
 
         doc.add(logoImg.setMarginLeft(30));
@@ -437,7 +457,7 @@ public class PDFExporter {
         writer.close();
     }
 
-    public void smetaInternal(String path, FormulaEvaluator evaluator, Sheet sheet, ArrayList<ArrayList<String>> rows) throws IOException {
+    public void smetaInternal(String projectName, String path, FormulaEvaluator evaluator, Sheet sheet, ArrayList<ArrayList<String>> rows) throws IOException {
 
         // |--------------------------------------------------
         // | 3 - Названия групп, в том числе материалы, работы
@@ -461,7 +481,7 @@ public class PDFExporter {
         Image logoImg = new Image(logoData);
         logoImg.setWidth(75);
 
-        this.addHeaderPage(doc, "Сметный расчет (внутренний)", logoImg);
+        this.addHeaderPage(doc, "Сметный расчет (внутренний)", projectName, logoImg);
 
         DecimalFormat df = new DecimalFormat();
 
@@ -557,7 +577,7 @@ public class PDFExporter {
         }
 
         AtomicReference<InternalSmetaStates> state = new AtomicReference<>(InternalSmetaStates.TITLE);
-        AtomicReference<Table> bufTable = new AtomicReference<>(new Table(new float[]{150f, 20f, 20f, 20f, 20f, 20f, 20f}));
+        AtomicReference<Table> bufTable = new AtomicReference<>(new Table(new float[]{180f, 20f, 20f, 20f, 20f, 20f, 20f}));
 
         cleared.forEach(row -> {
 
@@ -570,7 +590,7 @@ public class PDFExporter {
                 if (!Objects.equals(row.get(0), "Работы") && !Objects.equals(row.get(0), "Материалы") && !Objects.equals(row.get(0), "Техника и дополнительные расходы")) {
                     state.set(InternalSmetaStates.TITLE);
                     doc.add(new Paragraph("\n"));
-                    doc.add(new Paragraph(row.get(0)).setFontSize(18).setBold());
+                    doc.add(new Paragraph(row.get(0)).setFontSize(16).setBold());
                 } else {
                     state.set(InternalSmetaStates.SUBTITLE);
                     doc.add(new Paragraph(row.get(0)).setFontSize(14).setBold());
@@ -579,7 +599,7 @@ public class PDFExporter {
                 // Works
             }else if(row.size() == 7) {
 
-                float[] worksColWidth = {200f, 20f, 20f, 20f, 20f, 20f, 20f};
+                float[] worksColWidth = {180f, 20f, 20f, 20f, 20f, 20f, 20f};
 
                 if (state.get() == InternalSmetaStates.SUBTITLE || state.get() == InternalSmetaStates.TITLE) {
                     Table t = new Table(worksColWidth);
@@ -587,7 +607,7 @@ public class PDFExporter {
                     bufTable.set(t);
                 }
 
-                row.forEach(val -> bufTable.get().addCell(new Paragraph(val).setFontColor(GRAY_COLOR)));
+                row.forEach(val -> bufTable.get().addCell(new Paragraph(val).setFontColor(GRAY_COLOR).setFontSize(12)));
 
                 state.set(InternalSmetaStates.WORKS);
 
@@ -604,14 +624,15 @@ public class PDFExporter {
                     Double.parseDouble(row.get(0));
                     logger.error("could not parse table row name: " + row.get(0));
                 } catch (NumberFormatException e) {
-                    float[] materialsColWidth = {200f, 20f, 20f, 20f, 20f, 20f, 20f, 20f};
+
+                    float[] materialsColWidth = {180f, 20f, 20f, 20f, 20f, 20f, 20f, 20f};
                     if (state.get() == InternalSmetaStates.SUBTITLE || state.get() == InternalSmetaStates.TITLE) {
                         Table t = new Table(materialsColWidth);
                         addTableHeaders8(t);
                         bufTable.set(t);
                     }
 
-                    row.forEach(val -> bufTable.get().addCell(new Paragraph(val).setFontColor(GRAY_COLOR)));
+                    row.forEach(val -> bufTable.get().addCell(new Paragraph(val).setFontColor(GRAY_COLOR).setFontSize(12)));
                     state.set(InternalSmetaStates.MATERIALS);
                 }
             }
@@ -619,7 +640,6 @@ public class PDFExporter {
 
         // Добавляем незакрытую таблицу
         doc.add(bufTable.get());
-        doc.add(new AreaBreak());
 
         //////////////////////////
         // Добавляем футер нахуй
@@ -640,10 +660,19 @@ public class PDFExporter {
 
         doc.add(new Paragraph("\n"));
         doc.add(new Paragraph("С перечнем работ и материалов, ознакомлен, с итоговой стоимостью согласен.").setBold());
-        doc.add(new Paragraph("\n"));
-        doc.add(new Paragraph("Подпись Заказчика ______________"));
-        doc.add(new Paragraph("\n"));
-        doc.add(new Paragraph("Подпись Подрядчика ______________"));
+        Table footerTable = new Table(new float[]{250, 250});
+        footerTable.setBorderLeft(Border.NO_BORDER);
+        footerTable.setBorderRight(Border.NO_BORDER);
+        footerTable.setBorderBottom(Border.NO_BORDER);
+
+        footerTable.setPaddingTop(50);
+        footerTable.setPaddingBottom(50);
+
+        footerTable.addHeaderCell(new Paragraph("Подрядчик").setBold().setFontSize(14));
+        footerTable.addHeaderCell(new Paragraph("Заказчик").setBold().setFontSize(14));
+        footerTable.addCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("Подпись ______________")).setPaddingTop(40).setBorder(Border.NO_BORDER));
+        footerTable.addCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("Подпись ______________")).setPaddingTop(40).setBorder(Border.NO_BORDER));
+        doc.add(footerTable);
         doc.add(new Paragraph("\n"));
 
         doc.add(logoImg.setMarginLeft(30));
@@ -652,15 +681,24 @@ public class PDFExporter {
         writer.close();
     }
 
-    private void addHeaderPage(Document doc, String title, Image logo) throws MalformedURLException {
+    private void addHeaderPage(Document doc, String smetaName, String projectName, Image logo) throws MalformedURLException {
         /// Вставляем лого нахуй блять
         doc.add(logo);
         doc.add(new Paragraph("\n"));
         doc.add(new Paragraph("\n"));
 
-        doc.add(new Paragraph(title).setFontSize(18).setBold().setTextAlignment(TextAlignment.LEFT));
-        doc.add(new Paragraph("Документ подготовлен сайтом https://rbc.ramdom.work").setFontSize(14).setFontColor(Color.GRAY));
-        doc.add(new AreaBreak());
+        doc.add(new Paragraph(smetaName).setFontSize(16).setBold().setTextAlignment(TextAlignment.CENTER).setUnderline());
+        doc.add(new Paragraph(projectName).setFontSize(16).setBold().setTextAlignment(TextAlignment.CENTER).setUnderline());
+        doc.add(new Paragraph("\n"));
+
+        // Добавляем дату
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        LocalDateTime now = LocalDateTime.now();
+        doc.add(new Paragraph("Документ составлен " + now.format(dtf)).setFontSize(12));
+//        doc.add(new Paragraph("Документ подготовлен сайтом https://rbc.ramdom.work").setFontSize(14).setFontColor(Color.GRAY));
+
+        doc.add(new Paragraph("\n"));
+        doc.add(new Paragraph("\n"));
     }
 
     private Cell getCell(Sheet sheet, String id) {
@@ -678,40 +716,40 @@ public class PDFExporter {
     }
 
     public void addTableHeaders4(Table table) {
-        table.addHeaderCell(new Paragraph("Наименование работ и затрат").setBold());
-        table.addHeaderCell(new Paragraph("ед. изм").setBold());
-        table.addHeaderCell(new Paragraph("кол-во").setBold());
-        table.addHeaderCell(new Paragraph("Цена ед. изм.").setBold());
+        table.addHeaderCell(new Paragraph("Наименование работ и затрат").setBold().setFontSize(12));
+        table.addHeaderCell(new Paragraph("ед. изм").setBold().setFontSize(12));
+        table.addHeaderCell(new Paragraph("кол-во").setBold().setFontSize(12));
+        table.addHeaderCell(new Paragraph("Цена ед. изм.").setBold().setFontSize(12));
     }
 
 
     public void addTableHeaders5(Table table) {
-        table.addHeaderCell(new Paragraph("Наименование работ и затрат").setBold());
-        table.addHeaderCell(new Paragraph("ед. изм").setBold());
-        table.addHeaderCell(new Paragraph("кол-во").setBold());
-        table.addHeaderCell(new Paragraph("Цена ед. изм.").setBold());
-        table.addHeaderCell(new Paragraph("Общая цена").setBold());
+        table.addHeaderCell(new Paragraph("Наименование работ и затрат").setBold().setFontSize(12));
+        table.addHeaderCell(new Paragraph("ед. изм").setBold().setFontSize(12));
+        table.addHeaderCell(new Paragraph("кол-во").setBold().setFontSize(12));
+        table.addHeaderCell(new Paragraph("Цена ед. изм.").setBold().setFontSize(12));
+        table.addHeaderCell(new Paragraph("Общая цена").setBold().setFontSize(12));
     }
 
 
     public void addTableHeaders8(Table table) {
-        table.addHeaderCell(new Paragraph("Наименование работ и затрат").setBold());
-        table.addHeaderCell(new Paragraph("ед. изм").setBold());
-        table.addHeaderCell(new Paragraph("кол-во").setBold());
-        table.addHeaderCell(new Paragraph("Цена ед.изм.").setBold());
-        table.addHeaderCell(new Paragraph("Цена с накруткой").setBold());
-        table.addHeaderCell(new Paragraph("Общая цена").setBold());
-        table.addHeaderCell(new Paragraph("Цена по прайсу").setBold());
-        table.addHeaderCell(new Paragraph("Для закупа материала").setBold());
+        table.addHeaderCell(new Paragraph("Наименование работ и затрат").setBold().setFontSize(12));
+        table.addHeaderCell(new Paragraph("ед. изм").setBold().setFontSize(12));
+        table.addHeaderCell(new Paragraph("кол-во").setBold().setFontSize(12));
+        table.addHeaderCell(new Paragraph("Цена ед.изм.").setBold().setFontSize(12));
+        table.addHeaderCell(new Paragraph("Цена с накруткой").setBold().setFontSize(12));
+        table.addHeaderCell(new Paragraph("Общая цена").setBold().setFontSize(12));
+        table.addHeaderCell(new Paragraph("Цена по прайсу").setBold().setFontSize(12));
+        table.addHeaderCell(new Paragraph("Для закупа материала").setBold().setFontSize(12));
     }
 
     public void addTableHeaders7(Table table) {
-        table.addHeaderCell(new Paragraph("Наименование работ и затрат").setBold());
-        table.addHeaderCell(new Paragraph("ед. изм").setBold());
-        table.addHeaderCell(new Paragraph("кол-во").setBold());
-        table.addHeaderCell(new Paragraph("Цена ед.изм.").setBold());
-        table.addHeaderCell(new Paragraph("Цена с накруткой").setBold());
-        table.addHeaderCell(new Paragraph("Общая цена").setBold());
-        table.addHeaderCell(new Paragraph("Цена по прайсу").setBold());
+        table.addHeaderCell(new Paragraph("Наименование работ и затрат").setBold().setFontSize(12));
+        table.addHeaderCell(new Paragraph("ед. изм").setBold().setFontSize(12));
+        table.addHeaderCell(new Paragraph("кол-во").setBold().setFontSize(12));
+        table.addHeaderCell(new Paragraph("Цена ед.изм.").setBold().setFontSize(12));
+        table.addHeaderCell(new Paragraph("Цена с накруткой").setBold().setFontSize(12));
+        table.addHeaderCell(new Paragraph("Общая цена").setBold().setFontSize(12));
+        table.addHeaderCell(new Paragraph("Цена по прайсу").setBold().setFontSize(12));
     }
 }
