@@ -31,6 +31,7 @@ import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -69,7 +70,7 @@ public class PDFExporter {
         Image logoImg = new Image(logoData);
         logoImg.setWidth(75);
 
-        this.addHeaderPage(doc, "Сметный расчет для закупок", req.projectName, logoImg);
+        this.addHeaderPage(doc, "Сметный расчет для закупок", req, logoImg);
 
         //////////////////////////
         // Adding header information
@@ -244,9 +245,6 @@ public class PDFExporter {
         footerTable.addCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("Подпись ______________")).setPaddingTop(40).setBorder(Border.NO_BORDER));
         footerTable.addCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("Подпись ______________")).setPaddingTop(40).setBorder(Border.NO_BORDER));
         doc.add(footerTable);
-        doc.add(new Paragraph("\n"));
-
-        doc.add(logoImg.setMarginLeft(30));
 
         doc.close();
         writer.close();
@@ -282,7 +280,7 @@ public class PDFExporter {
         Image logoImg = new Image(logoData);
         logoImg.setWidth(75);
 
-        this.addHeaderPage(doc, "Сметный расчет для закупок", req.projectName, logoImg);
+        this.addHeaderPage(doc, "Сметный расчет для закупок", req, logoImg);
 
         //////////////////////////
         // Adding header information
@@ -456,9 +454,6 @@ public class PDFExporter {
         footerTable.addCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("Подпись ______________")).setPaddingTop(40).setBorder(Border.NO_BORDER));
         footerTable.addCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("Подпись ______________")).setPaddingTop(40).setBorder(Border.NO_BORDER));
         doc.add(footerTable);
-        doc.add(new Paragraph("\n"));
-
-        doc.add(logoImg.setMarginLeft(30));
 
         doc.close();
         writer.close();
@@ -491,7 +486,7 @@ public class PDFExporter {
         Image logoImg = new Image(logoData);
         logoImg.setWidth(75);
 
-        this.addHeaderPage(doc, "Сметный расчет (внутренний)", req.projectName, logoImg);
+        this.addHeaderPage(doc, "Сметный расчет (внутренний)", req, logoImg);
 
         DecimalFormat df = new DecimalFormat();
 
@@ -683,23 +678,25 @@ public class PDFExporter {
         footerTable.addCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("Подпись ______________")).setPaddingTop(40).setBorder(Border.NO_BORDER));
         footerTable.addCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("Подпись ______________")).setPaddingTop(40).setBorder(Border.NO_BORDER));
         doc.add(footerTable);
-        doc.add(new Paragraph("\n"));
-
-        doc.add(logoImg.setMarginLeft(30));
 
         doc.close();
         writer.close();
     }
 
-    private void addHeaderPage(Document doc, String smetaName, String projectName, Image logo) throws MalformedURLException {
+    private void addHeaderPage(Document doc, String smetaName, GetDocsRequest req, Image logo) throws MalformedURLException {
         /// Вставляем лого нахуй блять
         doc.add(logo);
         doc.add(new Paragraph("\n"));
         doc.add(new Paragraph("\n"));
 
         doc.add(new Paragraph(smetaName).setFontSize(16).setBold().setTextAlignment(TextAlignment.CENTER).setUnderline());
-        doc.add(new Paragraph(projectName).setFontSize(16).setBold().setTextAlignment(TextAlignment.CENTER).setUnderline());
+        doc.add(new Paragraph(req.projectName).setFontSize(16).setBold().setTextAlignment(TextAlignment.CENTER).setUnderline());
         doc.add(new Paragraph("\n"));
+
+        // Добавляем данные компании
+        for (Map.Entry<String, String> entry : req.companyInfo.entrySet()) {
+            doc.add(new Paragraph(entry.getKey() + ": " + entry.getValue()).setFontSize(12));
+        }
 
         // Добавляем дату
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
