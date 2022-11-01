@@ -421,6 +421,7 @@ public class PDFExporter {
 
         doc.add(bufTable.get());
         doc.add(new Paragraph("\n"));
+        doc.add(new Paragraph("\n"));
 
         //////////////////////////
         // Adding footer information
@@ -582,7 +583,7 @@ public class PDFExporter {
         }
 
         AtomicReference<InternalSmetaStates> state = new AtomicReference<>(InternalSmetaStates.TITLE);
-        AtomicReference<Table> bufTable = new AtomicReference<>(new Table(new float[]{180f, 20f, 20f, 20f, 20f, 20f, 20f}));
+        AtomicReference<Table> bufTable = new AtomicReference<>(new Table(new float[]{180f, 20f, 40f, 20f, 20f, 20f, 20f}));
 
         cleared.forEach(row -> {
 
@@ -604,7 +605,7 @@ public class PDFExporter {
                 // Works
             }else if(row.size() == 7) {
 
-                float[] worksColWidth = {180f, 20f, 20f, 20f, 20f, 20f, 20f};
+                float[] worksColWidth = {180f, 20f, 40f, 20f, 20f, 20f, 20f};
 
                 if (state.get() == InternalSmetaStates.SUBTITLE || state.get() == InternalSmetaStates.TITLE) {
                     Table t = new Table(worksColWidth);
@@ -630,7 +631,7 @@ public class PDFExporter {
                     logger.error("could not parse table row name: " + row.get(0));
                 } catch (NumberFormatException e) {
 
-                    float[] materialsColWidth = {180f, 20f, 20f, 20f, 20f, 20f, 20f, 20f};
+                    float[] materialsColWidth = {180f, 20f, 40f, 20f, 20f, 20f, 20f, 20f};
                     if (state.get() == InternalSmetaStates.SUBTITLE || state.get() == InternalSmetaStates.TITLE) {
                         Table t = new Table(materialsColWidth);
                         addTableHeaders8(t);
@@ -645,6 +646,9 @@ public class PDFExporter {
 
         // Добавляем незакрытую таблицу
         doc.add(bufTable.get());
+        doc.add(new Paragraph("\n"));
+        doc.add(new Paragraph("\n"));
+
 
         //////////////////////////
         // Добавляем футер нахуй
