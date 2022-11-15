@@ -15,6 +15,7 @@ import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
+import com.lightswitch.ramdom.smeta.requests.GetDocsRequest;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
@@ -30,6 +31,7 @@ import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -40,7 +42,7 @@ public class PDFExporter {
 
     private static final DeviceRgb GRAY_COLOR = new DeviceRgb(50, 50, 50);
 
-    public void smetaZak(String projectName, String path, FormulaEvaluator evaluator, Sheet sheet, ArrayList<ArrayList<String>> rows) throws IOException {
+    public void smetaZak(GetDocsRequest req, FormulaEvaluator evaluator, Sheet sheet, ArrayList<ArrayList<String>> rows) throws IOException {
 
         // |----------------------------------------------
         // | 1 - Всякая хуйня + сабтайтлы материалы и работы
@@ -51,7 +53,7 @@ public class PDFExporter {
 
         DecimalFormat df = new DecimalFormat("0.00");
 
-        PdfWriter writer = new PdfWriter(Paths.get(path, "smeta_zak.pdf").toString());
+        PdfWriter writer = new PdfWriter(Paths.get(req.path, "smeta_zak.pdf").toString());
 
         PdfDocument pdfDoc = new PdfDocument(writer);
         pdfDoc.setDefaultPageSize(PageSize.A4);
@@ -61,11 +63,14 @@ public class PDFExporter {
         PdfFont font = PdfFontFactory.createFont(FONT, PdfEncodings.IDENTITY_H);
         doc.setFont(font);
 
-        ImageData logoData = ImageDataFactory.create(Paths.get(System.getProperty("user.dir"), "/src/img/logo.png").toString());
+        String logoPath = req.logo.isBlank()?
+                Paths.get(System.getProperty("user.dir"), "/src/img/logo.png").toString() : req.logo;
+
+        ImageData logoData = ImageDataFactory.create(logoPath);
         Image logoImg = new Image(logoData);
         logoImg.setWidth(75);
 
-        this.addHeaderPage(doc, "Сметный расчет для закупок", projectName, logoImg);
+        this.addHeaderPage(doc, "Сметный расчет для закупок", req, logoImg);
 
         //////////////////////////
         // Adding header information
@@ -240,15 +245,12 @@ public class PDFExporter {
         footerTable.addCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("Подпись ______________")).setPaddingTop(40).setBorder(Border.NO_BORDER));
         footerTable.addCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("Подпись ______________")).setPaddingTop(40).setBorder(Border.NO_BORDER));
         doc.add(footerTable);
-        doc.add(new Paragraph("\n"));
-
-        doc.add(logoImg.setMarginLeft(30));
 
         doc.close();
         writer.close();
     }
 
-    public void smetaZakRassh(String projectName, String path, FormulaEvaluator evaluator, Sheet sheet, ArrayList<ArrayList<String>> rows) throws IOException {
+    public void smetaZakRassh(GetDocsRequest req, FormulaEvaluator evaluator, Sheet sheet, ArrayList<ArrayList<String>> rows) throws IOException {
 
         // |----------------------------------------------
         // | 1 - ничего
@@ -261,7 +263,7 @@ public class PDFExporter {
 
         DecimalFormat df = new DecimalFormat("0.00");
 
-        PdfWriter writer = new PdfWriter(Paths.get(path, "smeta_zak_rassh.pdf").toString());
+        PdfWriter writer = new PdfWriter(Paths.get(req.path, "smeta_zak_rassh.pdf").toString());
 
         PdfDocument pdfDoc = new PdfDocument(writer);
         pdfDoc.setDefaultPageSize(PageSize.A4);
@@ -271,11 +273,14 @@ public class PDFExporter {
         PdfFont font = PdfFontFactory.createFont(FONT, PdfEncodings.IDENTITY_H);
         doc.setFont(font);
 
-        ImageData logoData = ImageDataFactory.create(Paths.get(System.getProperty("user.dir"), "/src/img/logo.png").toString());
+        String logoPath = req.logo.isBlank()?
+                Paths.get(System.getProperty("user.dir"), "/src/img/logo.png").toString() : req.logo;
+
+        ImageData logoData = ImageDataFactory.create(logoPath);
         Image logoImg = new Image(logoData);
         logoImg.setWidth(75);
 
-        this.addHeaderPage(doc, "Сметный расчет для закупок", projectName, logoImg);
+        this.addHeaderPage(doc, "Сметный расчет для закупок", req, logoImg);
 
         //////////////////////////
         // Adding header information
@@ -449,15 +454,12 @@ public class PDFExporter {
         footerTable.addCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("Подпись ______________")).setPaddingTop(40).setBorder(Border.NO_BORDER));
         footerTable.addCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("Подпись ______________")).setPaddingTop(40).setBorder(Border.NO_BORDER));
         doc.add(footerTable);
-        doc.add(new Paragraph("\n"));
-
-        doc.add(logoImg.setMarginLeft(30));
 
         doc.close();
         writer.close();
     }
 
-    public void smetaInternal(String projectName, String path, FormulaEvaluator evaluator, Sheet sheet, ArrayList<ArrayList<String>> rows) throws IOException {
+    public void smetaInternal(GetDocsRequest req, FormulaEvaluator evaluator, Sheet sheet, ArrayList<ArrayList<String>> rows) throws IOException {
 
         // |--------------------------------------------------
         // | 3 - Названия групп, в том числе материалы, работы
@@ -467,7 +469,7 @@ public class PDFExporter {
         // | 7 - Работы
         // | 8 - Материалы
 
-        PdfWriter writer = new PdfWriter(Paths.get(path, "smeta_internal.pdf").toString());
+        PdfWriter writer = new PdfWriter(Paths.get(req.path, "smeta_internal.pdf").toString());
 
         PdfDocument pdfDoc = new PdfDocument(writer);
         pdfDoc.setDefaultPageSize(PageSize.A4.rotate());
@@ -477,11 +479,14 @@ public class PDFExporter {
         PdfFont font = PdfFontFactory.createFont(FONT, PdfEncodings.IDENTITY_H);
         doc.setFont(font);
 
-        ImageData logoData = ImageDataFactory.create(Paths.get(System.getProperty("user.dir"), "/src/img/logo.png").toString());
+        String logoPath = req.logo.isBlank()?
+                Paths.get(System.getProperty("user.dir"), "/src/img/logo.png").toString() : req.logo;
+
+        ImageData logoData = ImageDataFactory.create(logoPath);
         Image logoImg = new Image(logoData);
         logoImg.setWidth(75);
 
-        this.addHeaderPage(doc, "Сметный расчет (внутренний)", projectName, logoImg);
+        this.addHeaderPage(doc, "Сметный расчет (внутренний)", req, logoImg);
 
         DecimalFormat df = new DecimalFormat();
 
@@ -673,23 +678,25 @@ public class PDFExporter {
         footerTable.addCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("Подпись ______________")).setPaddingTop(40).setBorder(Border.NO_BORDER));
         footerTable.addCell(new com.itextpdf.layout.element.Cell().add(new Paragraph("Подпись ______________")).setPaddingTop(40).setBorder(Border.NO_BORDER));
         doc.add(footerTable);
-        doc.add(new Paragraph("\n"));
-
-        doc.add(logoImg.setMarginLeft(30));
 
         doc.close();
         writer.close();
     }
 
-    private void addHeaderPage(Document doc, String smetaName, String projectName, Image logo) throws MalformedURLException {
+    private void addHeaderPage(Document doc, String smetaName, GetDocsRequest req, Image logo) throws MalformedURLException {
         /// Вставляем лого нахуй блять
         doc.add(logo);
         doc.add(new Paragraph("\n"));
         doc.add(new Paragraph("\n"));
 
         doc.add(new Paragraph(smetaName).setFontSize(16).setBold().setTextAlignment(TextAlignment.CENTER).setUnderline());
-        doc.add(new Paragraph(projectName).setFontSize(16).setBold().setTextAlignment(TextAlignment.CENTER).setUnderline());
+        doc.add(new Paragraph(req.projectName).setFontSize(16).setBold().setTextAlignment(TextAlignment.CENTER).setUnderline());
         doc.add(new Paragraph("\n"));
+
+        // Добавляем данные компании
+        for (Map.Entry<String, String> entry : req.companyInfo.entrySet()) {
+            doc.add(new Paragraph(entry.getKey() + ": " + entry.getValue()).setFontSize(12));
+        }
 
         // Добавляем дату
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
