@@ -63,7 +63,7 @@ public class SmetaController {
 //        for (var entry : request.data.entrySet()) {
 //            System.out.println(entry.getKey() + "/" + entry.getValue());
 //        }
-        Double price = this.getCalculatedPrice(request.data);
+        Double price = this.getCalculatedPrice(request.data, request.pricelist);
 
         DecimalFormat df = new DecimalFormat("0.00");
 //        System.out.println(price);
@@ -263,7 +263,7 @@ public class SmetaController {
         this.logger.info("Test took " + totalTime / 1_000_000_000 + " seconds");
     }
 
-    private Double getCalculatedPrice(Map<String, String> params) {
+    private Double getCalculatedPrice(Map<String, String> params, Map<String, String> pricelist) {
 
         XSSFWorkbook workbook = this.getWorkbook();
         FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
@@ -283,10 +283,29 @@ public class SmetaController {
                 Cell valueCell = this.getCell(workbook, this.mappings.getCellID(name));
                 valueCell.setCellValue(value);
 
-            }catch (NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 String value = entry.getValue();
 
                 Cell valueCell = this.getCell(workbook, this.mappings.getCellID(name));
+                valueCell.setCellValue(value);
+            }
+        }
+
+        this.setDefaultPricelistValues(workbook);
+
+        for (Map.Entry<String, String> entry : pricelist.entrySet()) {
+            String name = entry.getKey();
+
+            try {
+                double value = Double.parseDouble(entry.getValue());
+
+                Cell valueCell = this.getPricelistCell(workbook, this.pricelistMappings.getCellID(name));
+                valueCell.setCellValue(value);
+
+            } catch (NumberFormatException e) {
+                String value = entry.getValue();
+
+                Cell valueCell = this.getPricelistCell(workbook, this.pricelistMappings.getCellID(name));
                 valueCell.setCellValue(value);
             }
         }

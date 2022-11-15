@@ -4,4 +4,5 @@ import java.util.Map;
 
 public class CalculateRequest {
     public Map<String, String> data;
+    public Map<String, String> pricelist;
 }
