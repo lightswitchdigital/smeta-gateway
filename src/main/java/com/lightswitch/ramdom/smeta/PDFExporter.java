@@ -68,7 +68,7 @@ public class PDFExporter {
 
         ImageData logoData = ImageDataFactory.create(logoPath);
         Image logoImg = new Image(logoData);
-        logoImg.setWidth(75);
+        logoImg.setWidth(150);
 
         this.addHeaderPage(doc, "Сметный расчет для закупок", req, logoImg);
 
@@ -278,7 +278,7 @@ public class PDFExporter {
 
         ImageData logoData = ImageDataFactory.create(logoPath);
         Image logoImg = new Image(logoData);
-        logoImg.setWidth(75);
+        logoImg.setWidth(150);
 
         this.addHeaderPage(doc, "Сметный расчет для закупок", req, logoImg);
 
@@ -485,7 +485,7 @@ public class PDFExporter {
 
         ImageData logoData = ImageDataFactory.create(logoPath);
         Image logoImg = new Image(logoData);
-        logoImg.setWidth(75);
+        logoImg.setWidth(120);
 
         this.addHeaderPage(doc, "Сметный расчет (внутренний)", req, logoImg);
 
@@ -583,7 +583,7 @@ public class PDFExporter {
         }
 
         AtomicReference<InternalSmetaStates> state = new AtomicReference<>(InternalSmetaStates.TITLE);
-        AtomicReference<Table> bufTable = new AtomicReference<>(new Table(new float[]{180f, 20f, 40f, 20f, 20f, 20f, 20f}));
+        AtomicReference<Table> bufTable = new AtomicReference<>(new Table(new float[]{180f, 20f, 50f, 20f, 20f, 20f, 20f}));
 
         cleared.forEach(row -> {
 
@@ -605,7 +605,7 @@ public class PDFExporter {
                 // Works
             }else if(row.size() == 7) {
 
-                float[] worksColWidth = {180f, 20f, 40f, 20f, 20f, 20f, 20f};
+                float[] worksColWidth = {180f, 20f, 50f, 20f, 20f, 20f, 20f};
 
                 if (state.get() == InternalSmetaStates.SUBTITLE || state.get() == InternalSmetaStates.TITLE) {
                     Table t = new Table(worksColWidth);
@@ -631,7 +631,7 @@ public class PDFExporter {
                     logger.error("could not parse table row name: " + row.get(0));
                 } catch (NumberFormatException e) {
 
-                    float[] materialsColWidth = {180f, 20f, 40f, 20f, 20f, 20f, 20f, 20f};
+                    float[] materialsColWidth = {180f, 20f, 50f, 20f, 20f, 20f, 20f, 20f};
                     if (state.get() == InternalSmetaStates.SUBTITLE || state.get() == InternalSmetaStates.TITLE) {
                         Table t = new Table(materialsColWidth);
                         addTableHeaders8(t);
